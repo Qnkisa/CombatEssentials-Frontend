@@ -1,9 +1,15 @@
-import './App.css'
+import Header from "./presentation/components/Header.tsx";
+import Footer from "./presentation/components/Footer.tsx";
 
-function App() {
 
-  return <div class="text-5xl font-bold">
-      This is the start nigga.
+function App(props: any) {
+
+  return <div class="min-h-screen flex flex-col w-full">
+      <Header/>
+      <div class="flex-grow">
+          {props.children}
+      </div>
+      <Footer/>
   </div>
 }
 
