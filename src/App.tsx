@@ -1,10 +1,47 @@
-import Header from "./presentation/components/Header.tsx";
-import Footer from "./presentation/components/Footer.tsx";
+import Header from "./presentation/components/Header";
+import Footer from "./presentation/components/Footer";
+import {useAuthContext} from "./util/context/AuthContext";
+import {useUserContext} from "./util/context/UserContext";
+import {createEffect, createSignal} from "solid-js";
+import {RemoteRepositoryImpl} from "./data/repository/RemoteRepositoryImpl";
 
+const repo = new RemoteRepositoryImpl();
 
 function App(props: any) {
 
-  return <div class="min-h-screen flex flex-col w-full">
+    const [token, setToken] = useAuthContext();
+    const [user, setUser] = useUserContext();
+
+    createEffect(() => {
+        if(!user() || !token()){
+            setUser(null);
+            setToken(null);
+        }
+    })
+
+    createEffect(() => {
+        const currentToken = token();
+
+        if (currentToken && !user()) {
+            (async () => {
+                try {
+                    const fetchedUser = await repo.me(currentToken);
+                    const adminStatus = await repo.isAdmin(currentToken);
+                    const userWithRole = { ...fetchedUser, isAdmin: adminStatus.isAdmin };
+
+                    setUser(userWithRole);
+                    localStorage.setItem("combat_user", JSON.stringify(userWithRole));
+                } catch (error) {
+                    console.error(error);
+                    setUser(null);
+                }
+            })();
+        }
+    });
+
+
+
+    return <div class="min-h-screen flex flex-col w-full">
       <Header/>
       <div class="flex-grow">
           {props.children}

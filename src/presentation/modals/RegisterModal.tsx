@@ -34,7 +34,7 @@ export const RegisterModal = (props: {
     return (
         <Modal state={props.state} onClose={props.onClose}>
             {(state) => (
-                <div class="max-h-[90vh] overflow-y-auto w-[90%] sm:w-[30rem] bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative text-gray-800">
+                <div class="max-h-[90vh] overflow-y-auto w-[300px] sm:w-[30rem] bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative text-gray-800">
                     {/* Close button */}
                     <button
                         type="button"
@@ -51,10 +51,10 @@ export const RegisterModal = (props: {
                             onSubmit();
                         }}
                     >
-                        <h2 class="text-2xl font-semibold text-center mb-2">Регистрация</h2>
+                        <h2 class="text-xl sm:text-2xl font-semibold text-center mb-2">Регистрация</h2>
 
                         <input
-                            class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="text"
                             placeholder="Име"
                             value={firstName()}
@@ -63,7 +63,7 @@ export const RegisterModal = (props: {
                         />
 
                         <input
-                            class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="text"
                             placeholder="Фамилия"
                             value={lastName()}
@@ -72,7 +72,7 @@ export const RegisterModal = (props: {
                         />
 
                         <input
-                            class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="email"
                             placeholder="Имейл"
                             value={email()}
@@ -81,7 +81,7 @@ export const RegisterModal = (props: {
                         />
 
                         <input
-                            class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="password"
                             placeholder="Парола"
                             value={password()}
@@ -95,7 +95,7 @@ export const RegisterModal = (props: {
 
                         <button
                             type="submit"
-                            class="bg-blue-600 text-white rounded-lg py-2 font-medium hover:bg-blue-700 transition"
+                            class="w-full bg-blue-600 text-white rounded-lg py-2 text-sm sm:text-base font-medium hover:bg-blue-700 transition cursor-pointer"
                         >
                             Регистрация
                         </button>
