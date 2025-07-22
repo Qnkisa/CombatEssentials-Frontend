@@ -1,6 +1,6 @@
 import { createSignal } from "solid-js";
 import Modal from "./Modal";
-import { RemoteRepositoryImpl } from "../../data/repository/RemoteRepositoryImpl";
+import { RemoteRepositoryImpl } from "../../repository/RemoteRepositoryImpl";
 import { useAuthContext } from "../../util/context/AuthContext";
 
 const repo = new RemoteRepositoryImpl();

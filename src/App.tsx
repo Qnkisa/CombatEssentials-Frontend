@@ -1,9 +1,9 @@
-import Header from "./presentation/components/Header";
-import Footer from "./presentation/components/Footer";
+import Header from "./presentation/components/general-components/Header";
+import Footer from "./presentation/components/general-components/Footer";
 import {useAuthContext} from "./util/context/AuthContext";
 import {useUserContext} from "./util/context/UserContext";
 import {createEffect, createSignal} from "solid-js";
-import {RemoteRepositoryImpl} from "./data/repository/RemoteRepositoryImpl";
+import {RemoteRepositoryImpl} from "./repository/RemoteRepositoryImpl";
 
 const repo = new RemoteRepositoryImpl();
 

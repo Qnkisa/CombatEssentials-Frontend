@@ -16,6 +16,8 @@ import Terms from "./presentation/pages/Terms";
 import ReturnPolicy from "./presentation/pages/ReturnPolicy";
 import Cart from "./presentation/pages/Cart";
 import PageNotFound from "./presentation/pages/PageNotFound";
+import AdminProducts from "./presentation/components/admin/admin-pages/AdminProducts";
+import AdminOrders from "./presentation/components/admin/admin-pages/AdminOrders";
 
 const root = document.getElementById('root')
 
@@ -26,7 +28,11 @@ render(() => (
                 <Route path="/" component={Home}/>
                 <Route path="/products" component={Products}/>
                 <Route path="/profile" component={Profile}/>
-                <Route path="/admin" component={Admin}/>
+                <Route path="/admin" component={Admin}>
+                    <Route path="/" component={AdminProducts}/>
+                    <Route path="/products" component={AdminProducts}/>
+                    <Route path="/orders" component={AdminOrders}/>
+                </Route>
                 <Route path="/about" component={About}/>
                 <Route path="/contact" component={Contact}/>
                 <Route path="/details/:id" component={Details}/>

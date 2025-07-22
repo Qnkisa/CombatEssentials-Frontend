@@ -1,14 +1,15 @@
 import { createSignal, Show } from "solid-js";
 import { A, useNavigate } from "@solidjs/router";
-import { RegisterModal } from "../modals/RegisterModal";
-import { LoginModal } from "../modals/LoginModal";
-import { useUserContext } from "../../util/context/UserContext";
-import { useAuthContext } from "../../util/context/AuthContext";
+import { RegisterModal } from "../../modals/RegisterModal";
+import { LoginModal } from "../../modals/LoginModal";
+import { useUserContext } from "../../../util/context/UserContext";
+import { useAuthContext } from "../../../util/context/AuthContext";
 
 export default function Header() {
     const [isMobileOpen, setIsMobileOpen] = createSignal<boolean>(false);
     const [isRegisterOpen, setIsRegisterOpen] = createSignal<true | undefined>(undefined);
     const [isLoginOpen, setIsLoginOpen] = createSignal<true | undefined>(undefined);
+    const [isAdminDropdownOpen, setIsAdminDropdownOpen] = createSignal<boolean>(false);
 
     const [user, setUser] = useUserContext();
     const [token, setToken] = useAuthContext();
@@ -70,9 +71,21 @@ export default function Header() {
                                 Profile
                             </A>
                             <Show when={user()?.isAdmin}>
-                                <A href="/admin" class="hover:text-blue-600 transition" aria-label="Admin Panel">
-                                    Admin
-                                </A>
+                                <div
+                                    class="relative group"
+                                    onMouseEnter={() => setIsAdminDropdownOpen(true)}
+                                    onMouseLeave={() => setIsAdminDropdownOpen(false)}
+                                >
+                                    <A href="/admin" class="hover:text-blue-600 transition" aria-label="Admin Panel">
+                                        Admin
+                                    </A>
+                                    <Show when={isAdminDropdownOpen()}>
+                                        <div class="absolute top-full bg-white shadow rounded py-2 w-40 z-50">
+                                            <A href="/admin/orders" class="block px-4 py-2 hover:bg-gray-100">Orders</A>
+                                            <A href="/admin/products" class="block px-4 py-2 hover:bg-gray-100">Products</A>
+                                        </div>
+                                    </Show>
+                                </div>
                             </Show>
                             <button onClick={handleLogout} class="hover:text-blue-600 transition cursor-pointer">
                                 Logout
@@ -144,9 +157,15 @@ export default function Header() {
                             Profile
                         </A>
                         <Show when={user()?.isAdmin}>
-                            <A href="/admin" onClick={() => setIsMobileOpen(false)} class="hover:text-blue-600 flex items-center gap-1" aria-label="Admin">
-                                Admin
-                            </A>
+                            <div class="flex flex-col space-y-1">
+                                <A href="/admin" onClick={() => setIsMobileOpen(false)} class="hover:text-blue-600">
+                                    Admin
+                                </A>
+                                <div class="pl-4 flex flex-col space-y-1 text-sm text-gray-600">
+                                    <A href="/admin/orders" onClick={() => setIsMobileOpen(false)} class="hover:text-blue-500">Orders</A>
+                                    <A href="/admin/products" onClick={() => setIsMobileOpen(false)} class="hover:text-blue-500">Products</A>
+                                </div>
+                            </div>
                         </Show>
                         <button onClick={handleLogout} class="hover:text-blue-600 cursor-pointer text-left">
                             Logout
