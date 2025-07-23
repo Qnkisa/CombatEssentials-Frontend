@@ -36,7 +36,7 @@ export default function Header() {
                 onClose={() => setIsLoginOpen(undefined)}
             />
 
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="w-5/6 mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
                 <A href="/" class="text-2xl font-bold text-gray-800">
                     MySite
                 </A>
