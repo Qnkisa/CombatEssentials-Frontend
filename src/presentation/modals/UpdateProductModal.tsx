@@ -1,14 +1,22 @@
-import {createSignal, onMount} from "solid-js";
+import {createEffect, createSignal, onMount, Show} from "solid-js";
 import Modal from "./Modal";
 import { RemoteRepositoryImpl } from "../../repository/RemoteRepositoryImpl";
 import { useAuthContext } from "../../util/context/AuthContext";
 
 const repo = new RemoteRepositoryImpl();
 
-export const CreateProductModal = (props: {
+export const UpdateProductModal = (props: {
     state: boolean | undefined;
-    onSuccess: () => void;
     onClose: () => void;
+    onSuccess: () => void;
+    product: {
+        id: number;
+        name: string;
+        description: string;
+        price: number;
+        categoryId: number;
+        imageUrl: string;
+    };
 }) => {
     const [name, setName] = createSignal("");
     const [description, setDescription] = createSignal("");
@@ -18,10 +26,9 @@ export const CreateProductModal = (props: {
     const [imageFile, setImageFile] = createSignal<File | null>(null);
     const [imagePreview, setImagePreview] = createSignal<string | null>(null);
     const [error, setError] = createSignal<string | null>(null);
+    const [token] = useAuthContext();
     let fileInputRef: HTMLInputElement | undefined;
-    const [token, setToken] = useAuthContext();
 
-    // Fetch categories when modal opens or component mounts
     onMount(async () => {
         try {
             const fetchedCategories = await repo.getAllCategories();
@@ -32,10 +39,19 @@ export const CreateProductModal = (props: {
         }
     });
 
+    createEffect(() => {
+        if (props.product) {
+            setName(props.product.name);
+            setDescription(props.product.description);
+            setPrice(props.product.price);
+            setCategoryId(props.product.categoryId);
+            setImagePreview(props.product.imageUrl);
+        }
+    });
+
     const handleImageChange = (e: Event) => {
         const target = e.currentTarget as HTMLInputElement;
         const file = target.files?.[0];
-
         if (file && /\.(jpe?g|png|webp|gif)$/i.test(file.name)) {
             setImageFile(file);
             setImagePreview(URL.createObjectURL(file));
@@ -47,33 +63,37 @@ export const CreateProductModal = (props: {
     const clearImage = () => {
         setImageFile(null);
         setImagePreview(null);
+        if (fileInputRef) fileInputRef.value = "";
     };
 
     const onSubmit = async () => {
         setError(null);
-
         const authToken = token();
         if (!authToken) return;
 
-        if (!name() || !description() || !price() || !categoryId() || !imageFile()) {
+        if (!name() || !description() || !price() || !categoryId()) {
             setError("Please fill in all fields.");
             return;
         }
 
         const formData = new FormData();
+        formData.append("Id", props.product.id.toString());
         formData.append("Name", name());
-        formData.append("Description", description());
+        formData.append("Description", description() ? description() : "");
         formData.append("Price", price().toString());
         formData.append("CategoryId", categoryId().toString());
-        formData.append("ImageFile", imageFile()!);
+
+        if (imageFile()) {
+            formData.append("ImageFile", imageFile()!);
+        }
 
         try {
-            await repo.createAdminProduct(authToken, formData);
+            await repo.updateAdminProduct(authToken, props.product.id, formData);
             props.onSuccess();
             props.onClose();
         } catch (err) {
             console.error(err);
-            setError("Error occurred while creating the product.");
+            setError("Error occurred while updating the product.");
         }
     };
 
@@ -96,7 +116,7 @@ export const CreateProductModal = (props: {
                             onSubmit();
                         }}
                     >
-                        <h2 class="text-xl sm:text-2xl font-semibold text-center mb-2">New Product</h2>
+                        <h2 class="text-xl sm:text-2xl font-semibold text-center mb-2">Edit Product</h2>
 
                         <input
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -126,36 +146,33 @@ export const CreateProductModal = (props: {
                             required
                         />
 
-                        {/* Replace number input with select */}
                         <select
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             value={categoryId()}
                             onChange={(e) => setCategoryId(Number(e.currentTarget.value))}
                             required
                         >
-                            <option value="" disabled>
-                                Choose category
-                            </option>
-                            {categories().map((category) => (
-                                <option value={category.id}>{category.name}</option>
+                            <option value="" disabled>Choose category</option>
+                            {categories().map((cat) => (
+                                <option value={cat.id}>{cat.name}</option>
                             ))}
                         </select>
 
-                        {/* Image file input */}
                         <div>
                             <label class="text-sm font-medium mb-1 block">Image</label>
-                            <input
-                                ref={fileInputRef}
-                                class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm"
-                                type="file"
-                                accept="image/jpeg, image/png, image/webp, image/jpg, image/gif"
-                                onChange={handleImageChange}
-                            />
-                            {imagePreview() && (
+                            <Show when={imagePreview()} fallback={
+                                <input
+                                    ref={fileInputRef}
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm"
+                                    type="file"
+                                    accept="image/jpeg, image/png, image/webp, image/jpg, image/gif"
+                                    onChange={handleImageChange}
+                                />
+                            }>
                                 <div class="mt-2 relative">
                                     <img
-                                        src={imagePreview()!}
-                                        alt="Преглед"
+                                        src={imagePreview()?.startsWith("/uploads") ? `https://localhost:7221${imagePreview()}` : imagePreview()!}
+                                        alt="Preview"
                                         class="w-full h-40 object-contain rounded-lg border"
                                     />
                                     <button
@@ -166,16 +183,18 @@ export const CreateProductModal = (props: {
                                         Remove
                                     </button>
                                 </div>
-                            )}
+                            </Show>
                         </div>
 
-                        {error() && <p class="text-red-500 text-sm text-center">{error()}</p>}
+                        <Show when={error()}>
+                            <p class="text-red-500 text-sm text-center">{error()}</p>
+                        </Show>
 
                         <button
                             type="submit"
-                            class="w-full bg-green-600 text-white rounded-lg py-2 text-sm sm:text-base font-medium hover:bg-green-700 transition cursor-pointer"
+                            class="w-full bg-blue-600 text-white rounded-lg py-2 text-sm sm:text-base font-medium hover:bg-blue-700 transition cursor-pointer"
                         >
-                            Create Product
+                            Update Product
                         </button>
                     </form>
                 </div>

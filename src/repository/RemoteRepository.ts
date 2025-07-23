@@ -14,6 +14,11 @@ export interface RemoteRepository {
     deleteAdminProduct(bearer: string, id: number): Promise<any>;
     undeleteAdminProduct(bearer: string, id: number): Promise<any>;
 
+    // Admin orders api functions
+    getAllAdminOrders(bearer: string, page?: number): Promise<any>;
+    getAdminOrderById(bearer: string, id: number): Promise<any>;
+    updateAdminOrder(bearer: string, id: number, updateOrderDto: any): Promise<any>;
+
     // Category api functions
     getAllCategories(): Promise<any>;
 }

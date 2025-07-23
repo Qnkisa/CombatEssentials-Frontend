@@ -125,9 +125,18 @@ export class RemoteRepositoryImpl implements RemoteRepository {
             body: formData
         });
 
-        if (!response.ok) throw new Error(`Update product failed: ${response.statusText}`);
-        return await response.json();
+        if (!response.ok) {
+            throw new Error(`Update product failed: ${response.statusText}`);
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+            return await response.json();
+        } else {
+            return await response.text();
+        }
     }
+
 
     async deleteAdminProduct(bearer: string, id: number): Promise<any> {
         const response = await fetch(`${this.apiUrl}/admin/products/delete/${id}`, {
@@ -151,6 +160,60 @@ export class RemoteRepositoryImpl implements RemoteRepository {
 
         if (!response.ok) throw new Error(`Undelete product failed: ${response.statusText}`);
         return await response.text(); // message only
+    }
+
+    // Admin orders api functions
+    async getAllAdminOrders(bearer: string, page: number = 1): Promise<any> {
+        const url = `${this.apiUrl}/admin/orders?page=${page}`;
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${bearer}`,
+                'Accept': 'application/json',
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to fetch admin orders: ${response.statusText}`);
+        return await response.json();
+    }
+
+    async getAdminOrderById(bearer: string, id: number): Promise<any> {
+        const response = await fetch(`${this.apiUrl}/admin/orders/${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${bearer}`,
+                'Accept': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) throw new Error('Order not found');
+            throw new Error(`Failed to fetch order: ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+
+    async updateAdminOrder(bearer: string, id: number, updateOrderDto: any): Promise<any> {
+        const response = await fetch(`${this.apiUrl}/admin/orders/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${bearer}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updateOrderDto),
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`Failed to update order: ${text}`);
+        }
+
+        const contentType = response.headers.get("content-type");
+        return contentType?.includes("application/json")
+            ? await response.json()
+            : await response.text();
     }
 
     // Category api functions
