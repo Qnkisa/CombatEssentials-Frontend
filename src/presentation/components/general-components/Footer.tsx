@@ -6,7 +6,7 @@ export default function Footer() {
                 <div class="flex flex-col md:flex-row md:justify-between gap-8">
                     {/* Logo + Description */}
                     <div class="flex-1">
-                        <h2 class="text-2xl font-bold">MySite</h2>
+                        <h2 class="text-2xl font-bold">CombatEssentials</h2>
                         <p class="text-gray-400 mt-2">
                             Modern solutions for your everyday needs. Clean, fast, and
                             accessible.
@@ -18,17 +18,17 @@ export default function Footer() {
                         <div>
                             <h3 class="text-sm font-semibold mb-2 text-gray-300">Company</h3>
                             <ul class="space-y-1">
-                                <li><a href="/public" class="hover:underline text-gray-400">Home</a></li>
+                                <li><a href="/" class="hover:underline text-gray-400">Home</a></li>
                                 <li><a href="/products" class="hover:underline text-gray-400">Products</a></li>
-                                <li><a href="#" class="hover:underline text-gray-400">About</a></li>
+                                <li><a href="/about" class="hover:underline text-gray-400">About</a></li>
                             </ul>
                         </div>
                         <div>
                             <h3 class="text-sm font-semibold mb-2 text-gray-300">Support</h3>
                             <ul class="space-y-1">
-                                <li><a href="#" class="hover:underline text-gray-400">Contact</a></li>
-                                <li><a href="#" class="hover:underline text-gray-400">Help Center</a></li>
-                                <li><a href="#" class="hover:underline text-gray-400">Privacy Policy</a></li>
+                                <li><a href="/contact" class="hover:underline text-gray-400">Contact</a></li>
+                                <li><a href="/terms" class="hover:underline text-gray-400">Terms & Conditions</a></li>
+                                <li><a href="/return" class="hover:underline text-gray-400">Return Policy</a></li>
                             </ul>
                         </div>
                         <div>
