@@ -34,11 +34,39 @@ export default function Footer() {
                         <div>
                             <h3 class="text-sm font-semibold mb-2 text-gray-300">Follow Us</h3>
                             <ul class="space-y-1">
-                                <li><a href="#" class="hover:underline text-gray-400">Facebook</a></li>
-                                <li><a href="#" class="hover:underline text-gray-400">Twitter</a></li>
-                                <li><a href="#" class="hover:underline text-gray-400">Instagram</a></li>
+                                <li>
+                                    <a
+                                        href="https://www.facebook.com/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="hover:underline text-gray-400"
+                                    >
+                                        Facebook
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="https://twitter.com/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="hover:underline text-gray-400"
+                                    >
+                                        X
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="https://www.instagram.com/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="hover:underline text-gray-400"
+                                    >
+                                        Instagram
+                                    </a>
+                                </li>
                             </ul>
                         </div>
+
                     </div>
                 </div>
 
