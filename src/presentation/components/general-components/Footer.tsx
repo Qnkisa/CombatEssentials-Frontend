@@ -1,7 +1,7 @@
 export default function Footer() {
     return (
         <footer class="bg-gray-900 text-white">
-            <div class="w-full mx-auto px-4 py-10">
+            <div class="w-5/6 mx-auto px-4 py-10">
                 {/* Grid layout for desktop, stacked for mobile */}
                 <div class="flex flex-col md:flex-row md:justify-between gap-8">
                     {/* Logo + Description */}

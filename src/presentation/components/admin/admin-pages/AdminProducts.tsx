@@ -13,9 +13,6 @@ export default function AdminProducts() {
     const [isCreateOpen, setIsCreateOpen] = createSignal<true | undefined>(undefined);
     const [products, setProducts] = createSignal<any[]>([]);
     const [token] = useAuthContext();
-    const [isLoading, setIsLoading] = createSignal<boolean>(false);
-
-    const [categories, setCategories] = createSignal<{ id: number; name: string }[]>([]);
 
     const refreshProducts = async () => {
         const authToken = token();
@@ -64,7 +61,10 @@ export default function AdminProducts() {
         <CreateProductModal
             state={isCreateOpen()}
             onSuccess={() => setIsCreateOpen(undefined)}
-            onClose={() => setIsCreateOpen(undefined)}
+            onClose={async () => {
+                setIsCreateOpen(undefined)
+                await refreshProducts();
+            }}
         />
         <UpdateProductModal
             state={isUpdateOpen()}

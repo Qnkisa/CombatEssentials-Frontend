@@ -21,4 +21,7 @@ export interface RemoteRepository {
 
     // Category api functions
     getAllCategories(): Promise<any>;
+
+    // Products api functions
+    getAllProducts(): Promise<any>;
 }

@@ -234,4 +234,17 @@ export class RemoteRepositoryImpl implements RemoteRepository {
             throw error;
         }
     }
+
+    // Products api functions
+    async getAllProducts(): Promise<any> {
+        const response = await fetch(`${this.apiUrl}/Product/random`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to fetch random products: ${response.statusText}`);
+        return await response.json();
+    }
 }
