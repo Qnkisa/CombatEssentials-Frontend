@@ -24,7 +24,7 @@ export const LoginModal = (props: {
             setToken(result.token);
             props.onSuccess();
         } catch (err) {
-            setError("Грешка при вход. Проверете данните.");
+            setError("Wrong credentials. Try again.");
             console.error(err);
         }
     };
@@ -49,12 +49,12 @@ export const LoginModal = (props: {
                             onSubmit();
                         }}
                     >
-                        <h2 class="text-xl sm:text-2xl font-semibold text-center mb-2">Вход</h2>
+                        <h2 class="text-xl sm:text-2xl font-semibold text-center mb-2">Login</h2>
 
                         <input
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="email"
-                            placeholder="Имейл"
+                            placeholder="Email..."
                             value={email()}
                             onInput={(e) => setEmail(e.currentTarget.value)}
                             required
@@ -63,7 +63,7 @@ export const LoginModal = (props: {
                         <input
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="password"
-                            placeholder="Парола"
+                            placeholder="Password..."
                             value={password()}
                             onInput={(e) => setPassword(e.currentTarget.value)}
                             required
@@ -77,7 +77,7 @@ export const LoginModal = (props: {
                             type="submit"
                             class="w-full bg-blue-600 text-white rounded-lg py-2 text-sm sm:text-base font-medium hover:bg-blue-700 transition cursor-pointer"
                         >
-                            Вход
+                            Login
                         </button>
                     </form>
                 </div>

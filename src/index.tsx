@@ -18,6 +18,9 @@ import Cart from "./presentation/pages/Cart";
 import PageNotFound from "./presentation/pages/PageNotFound";
 import AdminProducts from "./presentation/components/admin/admin-pages/AdminProducts";
 import AdminOrders from "./presentation/components/admin/admin-pages/AdminOrders";
+import ProfileInfo from "./presentation/components/profile/profile-pages/ProfileInfo";
+import ProfileWishlist from "./presentation/components/profile/profile-pages/ProfileWishlist";
+import ProfileOrders from "./presentation/components/profile/profile-pages/ProfileOrders";
 
 const root = document.getElementById('root')
 
@@ -27,7 +30,12 @@ render(() => (
             <Router root={App}>
                 <Route path="/" component={Home}/>
                 <Route path="/products" component={Products}/>
-                <Route path="/profile" component={Profile}/>
+                <Route path="/profile" component={Profile}>
+                    <Route path="/" component={ProfileInfo}/>
+                    <Route path="/info" component={ProfileInfo}/>
+                    <Route path="/orders" component={ProfileOrders}/>
+                    <Route path="/wishlist" component={ProfileWishlist}/>
+                </Route>
                 <Route path="/admin" component={Admin}>
                     <Route path="/" component={AdminProducts}/>
                     <Route path="/products" component={AdminProducts}/>

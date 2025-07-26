@@ -13,7 +13,6 @@ export default function Home(){
         try {
             const result = await repo.getRandomProducts();
             setProducts(result);
-            console.log(`All products: ${JSON.stringify(products())}`);
         } catch (err) {
             console.error("Failed to fetch products", err);
         }

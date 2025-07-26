@@ -249,12 +249,14 @@ export default function Details() {
                                 <h2 class="text-black text-2xl font-semibold">Product Reviews
                                     - {averageRating()?.toFixed(2)} (avg. rating)</h2>
                                 <div>
-                                    <button
-                                        class="bg-green-600 text-white rounded-lg p-2 text-sm sm:text-base font-medium hover:bg-green-700 transition cursor-pointer"
-                                        onClick={() => setIsOpenCreate(true)}
-                                    >
-                                        Create Review
-                                    </button>
+                                    <Show when={user()}>
+                                        <button
+                                            class="bg-green-600 text-white rounded-lg p-2 text-sm sm:text-base font-medium hover:bg-green-700 transition cursor-pointer"
+                                            onClick={() => setIsOpenCreate(true)}
+                                        >
+                                            Create Review
+                                        </button>
+                                    </Show>
                                 </div>
                             </div>
                             <Show when={productReviews().length > 0}

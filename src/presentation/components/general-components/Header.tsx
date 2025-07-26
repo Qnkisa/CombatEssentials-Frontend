@@ -1,15 +1,16 @@
-import { createSignal, Show } from "solid-js";
-import { A, useNavigate } from "@solidjs/router";
-import { RegisterModal } from "../../modals/RegisterModal";
-import { LoginModal } from "../../modals/LoginModal";
-import { useUserContext } from "../../../util/context/UserContext";
-import { useAuthContext } from "../../../util/context/AuthContext";
+import {createSignal, Show} from "solid-js";
+import {A, useNavigate} from "@solidjs/router";
+import {RegisterModal} from "../../modals/RegisterModal";
+import {LoginModal} from "../../modals/LoginModal";
+import {useUserContext} from "../../../util/context/UserContext";
+import {useAuthContext} from "../../../util/context/AuthContext";
 
 export default function Header() {
     const [isMobileOpen, setIsMobileOpen] = createSignal<boolean>(false);
     const [isRegisterOpen, setIsRegisterOpen] = createSignal<true | undefined>(undefined);
     const [isLoginOpen, setIsLoginOpen] = createSignal<true | undefined>(undefined);
     const [isAdminDropdownOpen, setIsAdminDropdownOpen] = createSignal<boolean>(false);
+    const [isProfileDropdownOpen, setIsProfileDropdownOpen] = createSignal<boolean>(false);
 
     const [user, setUser] = useUserContext();
     const [token, setToken] = useAuthContext();
@@ -67,9 +68,26 @@ export default function Header() {
                                       </button>
                                   </div>
                               }>
-                            <A href="/profile" class="hover:text-blue-600 transition" aria-label="Profile">
-                                Profile
-                            </A>
+                            <div
+                                class="relative group"
+                                onMouseEnter={() => setIsProfileDropdownOpen(true)}
+                                onMouseLeave={() => setIsProfileDropdownOpen(false)}
+                            >
+                                <A href="/profile" class="hover:text-blue-600 transition" aria-label="Profile">
+                                    Profile
+                                </A>
+                                <Show when={isProfileDropdownOpen()}>
+                                    <div
+                                        class="absolute top-full bg-white shadow rounded py-2 w-40 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                        <A href="/profile/info" class="block px-4 py-2 hover:bg-gray-100">Info</A>
+                                        <A href="/profile/orders"
+                                           class="block px-4 py-2 hover:bg-gray-100">Orders</A>
+                                        <A href="/profile/wishlist"
+                                           class="block px-4 py-2 hover:bg-gray-100">Wishlist</A>
+                                    </div>
+                                </Show>
+                            </div>
+
                             <Show when={user()?.isAdmin}>
                                 <div
                                     class="relative group"
@@ -82,7 +100,8 @@ export default function Header() {
                                     <Show when={isAdminDropdownOpen()}>
                                         <div class="absolute top-full bg-white shadow rounded py-2 w-40 z-50">
                                             <A href="/admin/orders" class="block px-4 py-2 hover:bg-gray-100">Orders</A>
-                                            <A href="/admin/products" class="block px-4 py-2 hover:bg-gray-100">Products</A>
+                                            <A href="/admin/products"
+                                               class="block px-4 py-2 hover:bg-gray-100">Products</A>
                                         </div>
                                     </Show>
                                 </div>
@@ -153,7 +172,8 @@ export default function Header() {
                                   </button>
                               </>
                           }>
-                        <A href="/profile" onClick={() => setIsMobileOpen(false)} class="hover:text-blue-600 flex items-center gap-1" aria-label="Profile">
+                        <A href="/profile" onClick={() => setIsMobileOpen(false)}
+                           class="hover:text-blue-600 flex items-center gap-1" aria-label="Profile">
                             Profile
                         </A>
                         <Show when={user()?.isAdmin}>
@@ -162,8 +182,10 @@ export default function Header() {
                                     Admin
                                 </A>
                                 <div class="pl-4 flex flex-col space-y-1 text-sm text-gray-600">
-                                    <A href="/admin/orders" onClick={() => setIsMobileOpen(false)} class="hover:text-blue-500">Orders</A>
-                                    <A href="/admin/products" onClick={() => setIsMobileOpen(false)} class="hover:text-blue-500">Products</A>
+                                    <A href="/admin/orders" onClick={() => setIsMobileOpen(false)}
+                                       class="hover:text-blue-500">Orders</A>
+                                    <A href="/admin/products" onClick={() => setIsMobileOpen(false)}
+                                       class="hover:text-blue-500">Products</A>
                                 </div>
                             </div>
                         </Show>

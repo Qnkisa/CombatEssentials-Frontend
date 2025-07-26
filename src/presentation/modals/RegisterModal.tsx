@@ -26,7 +26,7 @@ export const RegisterModal = (props: {
             );
             props.onSuccess();
         } catch (err) {
-            setError("Грешка при регистрация. Опитайте отново.");
+            setError("Error occurred while creating account. Try again.");
             console.error(err);
         }
     };
@@ -51,12 +51,12 @@ export const RegisterModal = (props: {
                             onSubmit();
                         }}
                     >
-                        <h2 class="text-xl sm:text-2xl font-semibold text-center mb-2">Регистрация</h2>
+                        <h2 class="text-xl sm:text-2xl font-semibold text-center mb-2">Register</h2>
 
                         <input
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="text"
-                            placeholder="Име"
+                            placeholder="First name..."
                             value={firstName()}
                             onInput={(e) => setFirstName(e.currentTarget.value)}
                             required
@@ -65,7 +65,7 @@ export const RegisterModal = (props: {
                         <input
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="text"
-                            placeholder="Фамилия"
+                            placeholder="Last name..."
                             value={lastName()}
                             onInput={(e) => setLastName(e.currentTarget.value)}
                             required
@@ -74,7 +74,7 @@ export const RegisterModal = (props: {
                         <input
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="email"
-                            placeholder="Имейл"
+                            placeholder="Email..."
                             value={email()}
                             onInput={(e) => setEmail(e.currentTarget.value)}
                             required
@@ -83,7 +83,7 @@ export const RegisterModal = (props: {
                         <input
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="password"
-                            placeholder="Парола"
+                            placeholder="Password..."
                             value={password()}
                             onInput={(e) => setPassword(e.currentTarget.value)}
                             required
@@ -97,7 +97,7 @@ export const RegisterModal = (props: {
                             type="submit"
                             class="w-full bg-blue-600 text-white rounded-lg py-2 text-sm sm:text-base font-medium hover:bg-blue-700 transition cursor-pointer"
                         >
-                            Регистрация
+                            Register
                         </button>
                     </form>
                 </div>
