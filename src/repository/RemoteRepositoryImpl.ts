@@ -236,7 +236,7 @@ export class RemoteRepositoryImpl implements RemoteRepository {
     }
 
     // Products api functions
-    async getAllProducts(): Promise<any> {
+    async getRandomProducts(): Promise<any> {
         const response = await fetch(`${this.apiUrl}/Product/random`, {
             method: 'GET',
             headers: {
@@ -247,4 +247,28 @@ export class RemoteRepositoryImpl implements RemoteRepository {
         if (!response.ok) throw new Error(`Failed to fetch random products: ${response.statusText}`);
         return await response.json();
     }
+
+    async getAllProducts(page?: number, categoryId?: number, name?: string): Promise<any> {
+        const params = new URLSearchParams();
+        if (page !== undefined) params.append("page", page.toString());
+        if (categoryId !== undefined) params.append("categoryId", categoryId.toString());
+        if (name) params.append("name", name);
+
+        const queryString = params.toString();
+        const url = `${this.apiUrl}/Product${queryString ? `?${queryString}` : ''}`;
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch products: ${response.statusText}`);
+        }
+
+        return await response.json(); // returns { data: [], page, last_page, total_items }
+    }
+
 }

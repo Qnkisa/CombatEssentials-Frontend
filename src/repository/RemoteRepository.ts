@@ -23,5 +23,6 @@ export interface RemoteRepository {
     getAllCategories(): Promise<any>;
 
     // Products api functions
-    getAllProducts(): Promise<any>;
+    getRandomProducts(): Promise<any>;
+    getAllProducts(page?: number, categoryId?: number, name?: string): Promise<any>;
 }

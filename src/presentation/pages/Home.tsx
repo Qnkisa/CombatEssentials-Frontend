@@ -1,6 +1,7 @@
 import {A} from "@solidjs/router";
-import {createSignal, onMount} from "solid-js";
+import {createSignal, For, onMount} from "solid-js";
 import {RemoteRepositoryImpl} from "../../repository/RemoteRepositoryImpl";
+import ProductCard from "../components/products/ProductCard";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -10,7 +11,7 @@ export default function Home(){
 
     onMount(async() => {
         try {
-            const result = await repo.getAllProducts();
+            const result = await repo.getRandomProducts();
             setProducts(result);
             console.log(`All products: ${JSON.stringify(products())}`);
         } catch (err) {
@@ -60,31 +61,11 @@ export default function Home(){
         <div class="w-5/6 mx-auto my-40">
             <h2 class="text-5xl font-bold mb-20 text-center">Featured Products</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                {products().map((product) => (
-                    <div class="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col">
-                        <img
-                            src={`${baseUrl}${product.imageUrl}`}
-                            alt={product.name}
-                            class="w-full h-64 object-cover"
-                            onError={(e) =>
-                                (e.currentTarget.src = "/fallback.jpg")
-                            }
-                        />
-                        <div class="p-5 flex flex-col justify-between flex-grow">
-                            <div>
-                                <h3 class="text-xl font-semibold mb-2">{product.name}</h3>
-                                <p class="text-sm text-gray-600 mb-4">{product.description}</p>
-                                <p class="text-lg font-bold text-gray-900 mb-4">${product.price.toFixed(2)}</p>
-                            </div>
-                            <A
-                                href={`/details/${product.id}`}
-                                class="mt-auto inline-block bg-red-600 hover:bg-red-700 text-white text-sm font-semibold py-2 px-4 rounded transition duration-200 text-center"
-                            >
-                                View Details
-                            </A>
-                        </div>
-                    </div>
-                ))}
+                <For each={products()}>
+                    {(product) => (
+                        <ProductCard product={product} baseUrl={baseUrl} />
+                    )}
+                </For>
             </div>
         </div>
 
