@@ -354,7 +354,7 @@ export class RemoteRepositoryImpl implements RemoteRepository {
     }
 
     async createProductReview(bearer: string, productId: number, rating: number, comment: string): Promise<any>{
-        const response = await fetch(`${this.apiUrl}/Reveiw`, {
+        const response = await fetch(`${this.apiUrl}/Review`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -368,11 +368,11 @@ export class RemoteRepositoryImpl implements RemoteRepository {
         }
 
         const data = await response.json();
-        return data; // Maybe user data or a success message
+        return data;
     }
 
     async deleteProductReview(bearer: string, reviewId: number): Promise<any>{
-        const response = await fetch(`${this.apiUrl}/Review/product/${reviewId}`, {
+        const response = await fetch(`${this.apiUrl}/Review/${reviewId}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
