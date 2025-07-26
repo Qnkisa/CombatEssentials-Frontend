@@ -283,4 +283,49 @@ export class RemoteRepositoryImpl implements RemoteRepository {
         return await response.json();
     }
 
+    // Wishlist api functions
+    async addToWishlist(token: string, productId: number) {
+        const response = await fetch(`${this.apiUrl}/Wishlist/${productId}`, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Wishlist error:", errorData.message);
+            throw new Error(errorData.message);
+        }
+
+        return response.json();
+    }
+
+    async removeFromWishlist(bearer: string, productId: number): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Wishlist/${productId}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${bearer}`,
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to remove product from wishlist: ${response.statusText}`);
+        return await response.json();
+    }
+
+    async getUserWishlist(bearer: string): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Wishlist`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${bearer}`,
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to get user wishlist: ${response.statusText}`);
+        return await response.json();
+    }
+
 }

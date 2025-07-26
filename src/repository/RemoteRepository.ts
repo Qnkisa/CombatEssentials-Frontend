@@ -26,4 +26,9 @@ export interface RemoteRepository {
     getRandomProducts(): Promise<any>;
     getAllProducts(page?: number, categoryId?: number, name?: string): Promise<any>;
     getProductById(productId: number): Promise<any>;
+
+    // Wishlist api functions
+    addToWishlist(bearer: string, productId: number): Promise<any>;
+    removeFromWishlist(bearer: string, productId: number): Promise<any>;
+    getUserWishlist(bearer: string): Promise<any>;
 }
