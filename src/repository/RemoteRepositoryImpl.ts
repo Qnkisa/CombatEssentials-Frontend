@@ -328,4 +328,60 @@ export class RemoteRepositoryImpl implements RemoteRepository {
         return await response.json();
     }
 
+    //Review api functions
+    async getAllProductReviews(productId: number): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Review/product/${productId}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to get user wishlist: ${response.statusText}`);
+        return await response.json();
+    }
+
+    async getProductAverageRating(productId: number): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Review/product/${productId}/average`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to get user wishlist: ${response.statusText}`);
+        return await response.json();
+    }
+
+    async createProductReview(bearer: string, productId: number, rating: number, comment: string): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Reveiw`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${bearer}`
+            },
+            body: JSON.stringify({ productId, rating, comment }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Registration failed: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data; // Maybe user data or a success message
+    }
+
+    async deleteProductReview(bearer: string, reviewId: number): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Review/product/${reviewId}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${bearer}`
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to get user wishlist: ${response.statusText}`);
+        return await response.json();
+    }
+
 }

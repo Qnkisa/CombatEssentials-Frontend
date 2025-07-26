@@ -31,4 +31,10 @@ export interface RemoteRepository {
     addToWishlist(bearer: string, productId: number): Promise<any>;
     removeFromWishlist(bearer: string, productId: number): Promise<any>;
     getUserWishlist(bearer: string): Promise<any>;
+
+    // Review api functions
+    getAllProductReviews(productId: number): Promise<any>;
+    getProductAverageRating(productId: number): Promise<any>;
+    createProductReview(bearer: string, productId: number, rating: number, comment: string): Promise<any>;
+    deleteProductReview(bearer: string, reviewId: number): Promise<any>;
 }
