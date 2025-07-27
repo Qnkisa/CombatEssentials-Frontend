@@ -1,6 +1,7 @@
 import { createSignal, onMount } from "solid-js";
 import { RemoteRepositoryImpl } from "../../../../repository/RemoteRepositoryImpl";
 import { useAuthContext } from "../../../../util/context/AuthContext";
+import {useNavigate} from "@solidjs/router";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -8,6 +9,7 @@ export default function ProfileWishlist() {
     const [wishlist, setWishlist] = createSignal<any[]>([]);
     const baseUrl = "https://localhost:7221";
     const [token] = useAuthContext();
+    const navigate = useNavigate();
 
     const getWishlist = async () => {
         const bearer = token();
@@ -56,7 +58,10 @@ export default function ProfileWishlist() {
                                 alt={item.name}
                                 class="w-full sm:w-32 h-32 object-cover rounded-md border"
                             />
-                            <div class="flex-1 w-full">
+                            <div
+                                class="flex-1 w-full cursor-pointer"
+                                onClick={() => navigate(`/details/${item.id}`)}
+                            >
                                 <h2 class="text-xl font-semibold text-gray-800">{item.name}</h2>
                                 <p class="text-gray-600 text-sm mt-1">{item.description}</p>
                                 <div class="mt-2 text-sm text-gray-500">

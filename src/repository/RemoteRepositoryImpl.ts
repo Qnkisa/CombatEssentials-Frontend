@@ -1,4 +1,5 @@
 import type { RemoteRepository } from "./RemoteRepository";
+import {CreateOrderDto} from "../util/dtos/CreateOrderDto";
 
 export class RemoteRepositoryImpl implements RemoteRepository {
     private apiUrl: string = 'https://localhost:7221/api';
@@ -279,7 +280,7 @@ export class RemoteRepositoryImpl implements RemoteRepository {
             },
         });
 
-        if (!response.ok) throw new Error(`Failed to fetch random products: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Failed to fetch product by id: ${response.statusText}`);
         return await response.json();
     }
 
@@ -293,13 +294,8 @@ export class RemoteRepositoryImpl implements RemoteRepository {
             }
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Wishlist error:", errorData.message);
-            throw new Error(errorData.message);
-        }
-
-        return response.json();
+        if (!response.ok) throw new Error(`Failed to add product to wishlist: ${response.statusText}`);
+        return await response.json();
     }
 
     async removeFromWishlist(bearer: string, productId: number): Promise<any>{
@@ -337,7 +333,7 @@ export class RemoteRepositoryImpl implements RemoteRepository {
             },
         });
 
-        if (!response.ok) throw new Error(`Failed to get user wishlist: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Failed to get product reviews: ${response.statusText}`);
         return await response.json();
     }
 
@@ -349,7 +345,7 @@ export class RemoteRepositoryImpl implements RemoteRepository {
             },
         });
 
-        if (!response.ok) throw new Error(`Failed to get user wishlist: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Failed to get product average rating: ${response.statusText}`);
         return await response.json();
     }
 
@@ -364,7 +360,7 @@ export class RemoteRepositoryImpl implements RemoteRepository {
         });
 
         if (!response.ok) {
-            throw new Error(`Registration failed: ${response.statusText}`);
+            throw new Error(`Failed to create product review: ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -380,8 +376,120 @@ export class RemoteRepositoryImpl implements RemoteRepository {
             },
         });
 
-        if (!response.ok) throw new Error(`Failed to get user wishlist: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Failed to delete product review: ${response.statusText}`);
         return await response.json();
     }
+
+    //Cart api functions
+    async getUserCart(bearer: string): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Cart`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${bearer}`
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to get user cart: ${response.statusText}`);
+        return await response.json();
+    }
+
+    async addToCart(bearer: string, productId: number, quantity: number): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Cart`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${bearer}`
+            },
+            body: JSON.stringify({ productId, quantity}),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to add item to cart: ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+
+    async removeFromCart(bearer: string, cartItemId: number): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Cart/${cartItemId}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${bearer}`
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to remove item from cart: ${response.statusText}`);
+        return await response.json();
+    }
+
+    async clearCart(bearer: string): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Cart/clear`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${bearer}`
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to clear cart: ${response.statusText}`);
+        return await response.json();
+    }
+
+    async updateCartItemQuantity(bearer: string, cartItemId: number, quantity: number): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Cart/update-quantity/${cartItemId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${bearer}`
+            },
+            body: JSON.stringify({ quantity}),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to update cart item quantity: ${response.statusText}`);
+        }
+
+        return await response.json();
+    }
+
+    //Order api functions
+    async getUserOrders(bearer: string): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Orders/user`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${bearer}`
+            },
+        });
+
+        if (!response.ok) throw new Error(`Failed to get user cart: ${response.statusText}`);
+        return await response.json();
+    }
+
+    async createOrder(bearer: string | undefined, orderDto: CreateOrderDto): Promise<any> {
+        const headers: HeadersInit = {
+            "Content-Type": "application/json",
+        };
+
+        if (bearer) {
+            headers["Authorization"] = `Bearer ${bearer}`;
+        }
+
+        const response = await fetch(`${this.apiUrl}/Orders`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify(orderDto),
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message || "Failed to create order");
+        }
+
+        return await response.json();
+    }
+
 
 }

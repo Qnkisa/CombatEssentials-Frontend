@@ -1,5 +1,5 @@
-export default function Cart(){
-    return <div class="text-5xl flex items-center justify-center w-full">
-        Cart page.
+export default function Cart(props: any){
+    return <div>
+        {props.children}
     </div>
 }
