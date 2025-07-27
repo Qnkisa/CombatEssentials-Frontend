@@ -4,6 +4,7 @@ import {RegisterModal} from "../../modals/RegisterModal";
 import {LoginModal} from "../../modals/LoginModal";
 import {useUserContext} from "../../../util/context/UserContext";
 import {useAuthContext} from "../../../util/context/AuthContext";
+import {useCartItemsContext} from "../../../util/context/CartItemsContext";
 
 export default function Header() {
     const [isMobileOpen, setIsMobileOpen] = createSignal<boolean>(false);
@@ -15,6 +16,10 @@ export default function Header() {
     const [user, setUser] = useUserContext();
     const [token, setToken] = useAuthContext();
     const navigate = useNavigate();
+
+    const {cartItems, setCartItems} = useCartItemsContext();
+    const cartItemCount = () => 2;
+
 
     function handleLogout() {
         setUser(null);
@@ -110,6 +115,20 @@ export default function Header() {
                                 Logout
                             </button>
                         </Show>
+                        <A href="/cart" class="relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24" width="24"
+                                 height="24">
+                                <path
+                                    d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zM7.82 14h8.88c.75 0 1.41-.41 1.75-1.03l3.58-6.49a1 1 0 00-.88-1.48H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44A1.99 1.99 0 007 18h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L7.82 14z"/>
+                            </svg>
+                            <Show when={cartItemCount() > 0}>
+                                <span
+                                    class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                                    {cartItemCount()}
+                                </span>
+                            </Show>
+                        </A>
+
                     </nav>
                 </div>
 
@@ -193,6 +212,18 @@ export default function Header() {
                             Logout
                         </button>
                     </Show>
+                    <div>
+                        <A href="/cart" class="relative" onClick={() => setIsMobileOpen(false)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="black" viewBox="0 0 24 24" width="24" height="24">
+                                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zM7.82 14h8.88c.75 0 1.41-.41 1.75-1.03l3.58-6.49a1 1 0 00-.88-1.48H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44A1.99 1.99 0 007 18h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L7.82 14z"/>
+                            </svg>
+                            <Show when={cartItemCount() > 0}>
+                            <span class="absolute -top-1 -right-7.5 bg-red-600 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                                {cartItemCount()}
+                            </span>
+                            </Show>
+                        </A>
+                    </div>
                 </nav>
             </Show>
         </div>
