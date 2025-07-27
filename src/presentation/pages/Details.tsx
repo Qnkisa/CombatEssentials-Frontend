@@ -4,6 +4,7 @@ import {RemoteRepositoryImpl} from "../../repository/RemoteRepositoryImpl";
 import {useAuthContext} from "../../util/context/AuthContext";
 import {useUserContext} from "../../util/context/UserContext";
 import {CreateReviewModal} from "../modals/CreateReviewModal";
+import {useCartItemsContext} from "../../util/context/CartItemsContext";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -30,6 +31,8 @@ export default function Details() {
 
     const navigate = useNavigate();
     const baseUrl = "https://localhost:7221";
+    const { cartItems, setCartItems } = useCartItemsContext();
+
 
     onMount(async () => {
         if (!productId()) {
@@ -135,6 +138,50 @@ export default function Details() {
         await getProductReviews();
     })
 
+    const handleAddToCart = () => {
+        const p = product();
+        if (!p) return;
+
+        if(token()){
+
+        }
+        else{
+            setCartItems((prev) => {
+                const index = prev.findIndex(item => item.productId === p.id);
+
+                let newCartItems;
+                if (index === -1) {
+                    // Not found - add new
+                    newCartItems = [
+                        ...prev,
+                        {
+                            productId: p.id,
+                            productName: p.name,
+                            imageUrl: p.imageUrl,
+                            quantity: quantity(),
+                            price: p.price,
+                            totalPrice: p.price * quantity(),
+                        }
+                    ];
+                } else {
+                    // Found - update quantity and totalPrice
+                    newCartItems = [...prev];
+                    const existing = newCartItems[index];
+                    const newQuantity = existing.quantity + quantity();
+                    newCartItems[index] = {
+                        ...existing,
+                        quantity: newQuantity,
+                        totalPrice: existing.price * newQuantity,
+                    };
+                }
+
+                // Save to localStorage
+                localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+                return newCartItems;
+            });
+        }
+    }
+
     return (
         <div class="w-5/6 mx-auto px-4 py-10 bg-white my-10 rounded-3xl">
             <CreateReviewModal
@@ -228,13 +275,7 @@ export default function Details() {
                                 <div class="pt-6">
                                     <button
                                         class="bg-indigo-600 hover:bg-indigo-700 cursor-pointer text-white px-6 py-3 rounded-2xl shadow transition duration-200 ease-in-out"
-                                        onClick={() => {
-                                            // Placeholder: Implement cart logic later
-                                            console.log("Added to cart", {
-                                                product: p(),
-                                                quantity: quantity(),
-                                            });
-                                        }}
+                                        onClick={handleAddToCart}
                                     >
                                         Add to Cart
                                     </button>

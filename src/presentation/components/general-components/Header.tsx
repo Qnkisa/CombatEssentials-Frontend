@@ -18,7 +18,7 @@ export default function Header() {
     const navigate = useNavigate();
 
     const {cartItems, setCartItems} = useCartItemsContext();
-    const cartItemCount = () => 2;
+    const cartItemCount = () => cartItems.length;
 
 
     function handleLogout() {
