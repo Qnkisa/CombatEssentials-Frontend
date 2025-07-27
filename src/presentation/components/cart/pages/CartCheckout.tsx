@@ -55,11 +55,7 @@ export default function CartCheckout() {
             return;
         }
 
-        if(token()){
-
-        }
         else{
-
             const payload: CreateOrderDto = {
                 fullName: fullName(),
                 phoneNumber: phoneNumber(),
@@ -72,8 +68,18 @@ export default function CartCheckout() {
 
             try {
                 await repo.createOrder(token() || undefined, payload);
-                localStorage.removeItem("cartItems");
-                setCartItems([]);
+
+                if(token()){
+                    const bearer = token();
+                    if(!bearer)return;
+
+                    await repo.clearCart(bearer);
+                    setCartItems([]);
+                }else{
+                    localStorage.removeItem("cartItems");
+                    setCartItems([]);
+                }
+
                 navigate("/order-success");
             } catch (err) {
                 setError("An error occurred while placing the order.");
@@ -133,7 +139,7 @@ export default function CartCheckout() {
                 </div>
 
                 {/* Right side: Cart items */}
-                <div class="space-y-4">
+                <div class="space-y-4 relative">
                     <h2 class="text-2xl font-bold text-gray-800">Your Cart</h2>
                     {cartItems.length === 0 ? (
                         <p class="text-gray-500">Your cart is empty.</p>
@@ -141,7 +147,7 @@ export default function CartCheckout() {
                         cartItems.map((item: CartItem) => (
                             <div class="flex items-center bg-gray-100 rounded-lg p-4 gap-4">
                                 <img
-                                    src={`${baseUrl}${item.imageUrl}`}
+                                    src={`${baseUrl}${item.productImageUrl}`}
                                     alt={item.productName}
                                     class="w-20 h-20 object-cover rounded"
                                 />
@@ -155,6 +161,23 @@ export default function CartCheckout() {
                             </div>
                         ))
                     )}
+
+                    <button
+                        onClick={() => navigate("/cart/items")}
+                        class="mb-4 inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium transition duration-200 cursor-pointer bottom-0 right-4 absolute"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                        >
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Back to Cart
+                    </button>
                 </div>
             </div>
         </div>

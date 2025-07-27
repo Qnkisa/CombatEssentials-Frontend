@@ -2,7 +2,9 @@ import {CartItem, useCartItemsContext} from "../../../../util/context/CartItemsC
 import {useAuthContext} from "../../../../util/context/AuthContext";
 import {useNavigate} from "@solidjs/router";
 import {createMemo, onMount, Show} from "solid-js";
+import {RemoteRepositoryImpl} from "../../../../repository/RemoteRepositoryImpl";
 
+const repo = new RemoteRepositoryImpl();
 
 export default function CartItems() {
     const {cartItems, setCartItems} = useCartItemsContext();
@@ -10,8 +12,26 @@ export default function CartItems() {
     const [token] = useAuthContext();
     const navigate = useNavigate();
 
-    const increaseQuantity = (productId: number) => {
+    onMount(() => {console.log(cartItems)});
+
+    const increaseQuantity = async (productId: number) => {
         if (token()) {
+            const bearer = token();
+            if(!bearer)return;
+
+            try{
+
+                const item = cartItems.find(item => item.productId === productId);
+                const cartItemId = item ? item.id : 0;
+                const oldQuantity = item ? item.quantity : 0;
+                const newQuantity = oldQuantity + 1;
+
+                await repo.updateCartItemQuantity(bearer,cartItemId!, newQuantity);
+                const newCart = await repo.getUserCart(bearer);
+                setCartItems(newCart);
+            }catch(err){
+                console.log(err);
+            }
 
         } else {
             setCartItems((prev: CartItem[]) =>
@@ -20,7 +40,7 @@ export default function CartItems() {
                         ? {
                             ...item,
                             quantity: item.quantity + 1,
-                            totalPrice: item.price * (item.quantity + 1),
+                            totalPrice: item.productPrice * (item.quantity + 1),
                         }
                         : item
                 )
@@ -29,8 +49,23 @@ export default function CartItems() {
         }
     };
 
-    const decreaseQuantity = (productId: number) => {
+    const decreaseQuantity = async (productId: number) => {
         if (token()) {
+            const bearer = token();
+            if(!bearer)return;
+
+            try{
+                const item = cartItems.find(item => item.productId === productId);
+                const cartItemId = item ? item.id : 0;
+                const oldQuantity = item ? item.quantity : 0;
+                const newQuantity = oldQuantity - 1;
+
+                await repo.updateCartItemQuantity(bearer,cartItemId!,newQuantity);
+                const newCart = await repo.getUserCart(bearer);
+                setCartItems(newCart);
+            }catch(err){
+                console.log(err);
+            }
 
         } else {
             setCartItems((prev: CartItem[]) =>
@@ -40,7 +75,7 @@ export default function CartItems() {
                             ? {
                                 ...item,
                                 quantity: item.quantity - 1,
-                                totalPrice: item.price * (item.quantity - 1),
+                                totalPrice: item.productPrice * (item.quantity - 1),
                             }
                             : item
                     )
@@ -51,8 +86,22 @@ export default function CartItems() {
         }
     };
 
-    const removeItem = (productId: number) => {
+    const removeItem = async (productId: number) => {
         if (token()) {
+            const bearer = token();
+            if(!bearer)return;
+
+            try{
+                const item = cartItems.find(item => item.productId === productId);
+                const cartItemId = item ? item.id : 0;
+
+                await repo.removeFromCart(bearer, cartItemId!);
+
+                const newCart = await repo.getUserCart(bearer);
+                setCartItems(newCart);
+            }catch(err){
+                console.log(err);
+            }
 
         } else {
             setCartItems((prev: CartItem[]) => prev.filter(item => item.productId !== productId));
@@ -61,9 +110,17 @@ export default function CartItems() {
 
     };
 
-    const clearCart = () => {
+    const clearCart = async () => {
         if (token()) {
+            const bearer = token();
+            if(!bearer)return;
 
+            try{
+                await repo.clearCart(bearer);
+                setCartItems([]);
+            }catch(err){
+                console.log(err);
+            }
         } else {
             localStorage.removeItem("cartItems");
             setCartItems([]);
@@ -95,26 +152,32 @@ export default function CartItems() {
                             class="bg-white shadow-md rounded-lg p-4 flex flex-col sm:flex-row items-center gap-4 text-black my-5"
                         >
                             <img
-                                src={`${baseUrl}${item.imageUrl}`}
+                                src={`${baseUrl}${item.productImageUrl}`}
                                 alt={item.productName}
                                 class="w-36 h-36 object-cover rounded"
                             />
                             <div class="flex-1 flex flex-col justify-between h-full">
                                 <div>
                                     <h2 class="text-xl font-semibold">{item.productName}</h2>
-                                    <p class="text-gray-600 mt-1">Price: ${item.price.toFixed(2)}</p>
+                                    <p class="text-gray-600 mt-1">Price: ${item.productPrice}</p>
                                     <p class="text-gray-800 font-semibold mt-1">
-                                        Total: ${item.totalPrice.toFixed(2)}
+                                        Total: ${item.totalPrice}
                                     </p>
                                 </div>
                                 <div class="mt-4 flex items-center gap-3">
                                     <button
                                         onClick={() => decreaseQuantity(item.productId)}
-                                        class="bg-gray-200 hover:bg-gray-300 rounded px-3 py-1 text-lg select-none cursor-pointer"
+                                        class={`px-3 py-1 text-lg rounded select-none ${
+                                            item.quantity === 1
+                                                ? "bg-gray-400 cursor-not-allowed text-gray-600"
+                                                : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                                        }`}
+                                        disabled={item.quantity === 1}
                                         aria-label={`Decrease quantity of ${item.productName}`}
                                     >
                                         −
                                     </button>
+
                                     <span class="text-lg font-medium select-none">{item.quantity}</span>
                                     <button
                                         onClick={() => increaseQuantity(item.productId)}

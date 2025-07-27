@@ -179,23 +179,6 @@ export class RemoteRepositoryImpl implements RemoteRepository {
         return await response.json();
     }
 
-    async getAdminOrderById(bearer: string, id: number): Promise<any> {
-        const response = await fetch(`${this.apiUrl}/admin/orders/${id}`, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${bearer}`,
-                'Accept': 'application/json',
-            },
-        });
-
-        if (!response.ok) {
-            if (response.status === 404) throw new Error('Order not found');
-            throw new Error(`Failed to fetch order: ${response.statusText}`);
-        }
-
-        return await response.json();
-    }
-
     async updateAdminOrder(bearer: string, id: number, updateOrderDto: any): Promise<any> {
         const response = await fetch(`${this.apiUrl}/admin/orders/${id}`, {
             method: 'PUT',

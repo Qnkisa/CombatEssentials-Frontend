@@ -16,7 +16,6 @@ export interface RemoteRepository {
 
     //Admin orders api functions
     getAllAdminOrders(bearer: string, page?: number): Promise<any>;
-    getAdminOrderById(bearer: string, id: number): Promise<any>;
     updateAdminOrder(bearer: string, id: number, updateOrderDto: any): Promise<any>;
 
     //Category api functions

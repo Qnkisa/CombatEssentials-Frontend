@@ -138,12 +138,40 @@ export default function Details() {
         await getProductReviews();
     })
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         const p = product();
         if (!p) return;
 
-        if(token()){
-            console.log("sussy baka!");
+        const bearer = token();
+
+        if(bearer){
+            if (cartItems.some(item => item.productId === productId())) {
+                try{
+                    const item = cartItems.find(item => item.productId === productId());
+                    const newQuantity = item ? item.quantity : 0;
+                    const totalQuantity = quantity() + newQuantity;
+                    const cartItemId = item ? item.id : 0;
+
+                    await repo.updateCartItemQuantity(bearer, cartItemId!, totalQuantity);
+
+                    const newCart = await repo.getUserCart(bearer);
+                    console.log(`New cart: ${JSON.stringify(newCart)}`);
+                    setCartItems(newCart);
+                    console.log(`Context items: ${JSON.stringify(cartItems)}`);
+                }catch(err){
+                    console.log(err);
+                }
+            }
+            else{
+                try{
+                    await repo.addToCart(bearer, productId(), quantity());
+
+                    const newCart = await repo.getUserCart(bearer);
+                    setCartItems(newCart);
+                }catch(err){
+                    console.log(err);
+                }
+            }
         }
         else{
             setCartItems((prev) => {
@@ -155,11 +183,13 @@ export default function Details() {
                     newCartItems = [
                         ...prev,
                         {
+                            id: undefined,
+                            shoppingCartId: undefined,
                             productId: p.id,
                             productName: p.name,
-                            imageUrl: p.imageUrl,
+                            productImageUrl: p.imageUrl,
                             quantity: quantity(),
-                            price: p.price,
+                            productPrice: p.price,
                             totalPrice: p.price * quantity(),
                         }
                     ];
@@ -171,7 +201,7 @@ export default function Details() {
                     newCartItems[index] = {
                         ...existing,
                         quantity: newQuantity,
-                        totalPrice: existing.price * newQuantity,
+                        totalPrice: existing.productPrice * newQuantity,
                     };
                 }
 

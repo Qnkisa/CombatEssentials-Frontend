@@ -3,11 +3,13 @@ import { createStore } from "solid-js/store";
 
 // Define the shape of a single cart item
 export interface CartItem {
+    id: number | undefined;
+    shoppingCartId: number | undefined;
     productId: number;
     productName: string;
-    imageUrl: string;
+    productImageUrl: string;
     quantity: number;
-    price: number;
+    productPrice: number;
     totalPrice: number;
 }
 
