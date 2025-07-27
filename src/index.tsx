@@ -24,6 +24,7 @@ import ProfileOrders from "./presentation/components/profile/profile-pages/Profi
 import {CartItemsProvider} from "./util/context/CartItemsContext";
 import CartItems from "./presentation/components/cart/pages/CartItems";
 import CartCheckout from "./presentation/components/cart/pages/CartCheckout";
+import OrderSuccess from "./presentation/pages/OrderSuccess";
 
 const root = document.getElementById('root')
 
@@ -55,6 +56,7 @@ render(() => (
                         <Route path="/items" component={CartItems}/>
                         <Route path="/checkout" component={CartCheckout}/>
                     </Route>
+                    <Route path="order-success" component={OrderSuccess}/>
                     <Route path="*" component={PageNotFound}/>
                 </Router>
             </UserProvider>

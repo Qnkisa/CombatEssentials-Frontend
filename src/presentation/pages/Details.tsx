@@ -143,7 +143,7 @@ export default function Details() {
         if (!p) return;
 
         if(token()){
-
+            console.log("sussy baka!");
         }
         else{
             setCartItems((prev) => {
