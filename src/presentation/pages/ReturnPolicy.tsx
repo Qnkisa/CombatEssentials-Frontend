@@ -2,13 +2,13 @@ export default function ReturnPolicy() {
     return (
         <div class="w-5/6 mx-auto px-2 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-20">
             <div class="max-w-5xl mx-auto">
-                <h1 class="text-3xl sm:text-5xl font-bold text-white mb-10 text-center">
+                <h1 class="text-3xl sm:text-5xl font-bold text-gray-800 mb-10 text-center">
                     Return & Exchange Policy
                 </h1>
 
                 {/* Section 1 */}
                 <section class="mb-10 space-y-4 text-base sm:text-lg ">
-                    <h2 class="text-2xl font-semibold text-white">1. General Return Guidelines</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800">1. General Return Guidelines</h2>
                     <div class="text-gray-400">
                         <p class="py-4">
                             At <span class="font-semibold">Combat Essentials</span>, we strive to ensure every
@@ -30,7 +30,7 @@ export default function ReturnPolicy() {
 
                 {/* Section 2 */}
                 <section class="mb-10 space-y-4 text-base sm:text-lg">
-                    <h2 class="text-2xl font-semibold text-white">2. Non-Returnable Items</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800">2. Non-Returnable Items</h2>
                     <div class="text-gray-400">
                         <p class="py-4">
                             For hygiene and safety reasons, certain products are not eligible for return or exchange
@@ -52,7 +52,7 @@ export default function ReturnPolicy() {
 
                 {/* Section 3 */}
                 <section class="mb-10 space-y-4 text-base sm:text-lg">
-                    <h2 class="text-2xl font-semibold text-white">3. How to Start a Return</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800">3. How to Start a Return</h2>
                     <div class="text-gray-400">
                         <p class="py-4">
                             Initiating a return is easy. Simply follow these steps:
@@ -70,7 +70,7 @@ export default function ReturnPolicy() {
 
                 {/* Section 4 */}
                 <section class="mb-10 space-y-4 text-base sm:text-lg">
-                    <h2 class="text-2xl font-semibold text-white">4. Refunds and Processing Time</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800">4. Refunds and Processing Time</h2>
                     <div class="text-gray-400">
                         <p class="py-4">
                             Once we receive and inspect your return, we will notify you via email. If the return is
@@ -90,7 +90,7 @@ export default function ReturnPolicy() {
 
                 {/* Section 5 */}
                 <section class="space-y-4 text-base sm:text-lg white">
-                    <h2 class="text-2xl font-semibold ">5. Questions? Contact Us</h2>
+                    <h2 class="text-2xl font-semibold  text-gray-800">5. Questions? Contact Us</h2>
                     <div class="text-gray-400">
                         <p class="py-4">
                             We’re fighters too — we get it. If you have questions about your order, gear, or the return

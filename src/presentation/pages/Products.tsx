@@ -80,9 +80,9 @@ export default function Products() {
     });
 
     return (
-        <div class="w-full">
+        <div class="w-full bg-gray-50">
             <LoadingIndicator isLoading={isLoading()} loadingText="Loading..." />
-            <div class="w-5/6 mx-auto my-20">
+            <div class="w-5/6 mx-auto pt-20 text-black">
                 <h1 class="text-5xl font-bold mb-6">All products</h1>
                 <ProductsFilter
                     setCategory={(value) => {
@@ -96,7 +96,7 @@ export default function Products() {
                 />
             </div>
 
-            <div class="w-5/6 mx-auto my-20">
+            <div class="w-5/6 mx-auto py-20">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                     <For each={products()}>
                         {(product) => (

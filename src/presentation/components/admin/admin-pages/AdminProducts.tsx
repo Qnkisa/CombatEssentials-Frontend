@@ -70,7 +70,7 @@ export default function AdminProducts() {
         error?: boolean;
     } | null>(null);
 
-    return <div>
+    return <div class="w-full min-h-screen bg-gray-50 px-4 py-10">
         <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
 
         <TopCenterPopup state={popupState()} onClose={() => setPopupState(null)} />
@@ -146,8 +146,8 @@ export default function AdminProducts() {
             }
         />
         <div
-            class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-5/6 my-5 sm:my-10 mx-auto py-4 sm:py-5 px-4 sm:px-8 bg-gray-700 rounded-xl">
-            <h1 class="text-2xl sm:text-5xl font-bold text-white">Products</h1>
+            class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-5/6 my-5 sm:my-10 mx-auto py-4 sm:py-5 px-4 sm:px-8 bg-white shadow-sm rounded-2xl">
+            <h1 class="text-2xl sm:text-5xl font-bold text-gray-800">Products</h1>
             <div>
                 <button
                     class="bg-green-600 text-white rounded-lg p-2 text-sm sm:text-base font-medium hover:bg-green-700 transition cursor-pointer"

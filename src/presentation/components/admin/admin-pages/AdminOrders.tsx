@@ -31,10 +31,10 @@ export default function AdminOrders() {
     onMount(refreshOrders);
 
     return (
-        <div>
+        <div class="w-full min-h-screen bg-gray-50 px-4 py-10">
             <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-5/6 my-5 sm:my-10 mx-auto py-4 sm:py-5 px-4 sm:px-8 bg-gray-700 rounded-xl">
-                <h1 class="text-2xl sm:text-5xl font-bold text-white">Orders</h1>
+            <div class="mx-auto py-10 px-4 text-center">
+                <h1 class="text-2xl sm:text-5xl font-bold text-gray-800">Orders</h1>
             </div>
 
             <div class="w-5/6 mx-auto grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-6 pb-20">

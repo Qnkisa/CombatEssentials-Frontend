@@ -24,7 +24,7 @@ export default function Home(){
         }
     })
 
-    return <div class="w-full">
+    return <div class="w-full bg-gray-50">
         <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
         {/*Home hero*/}
         <div class="relative w-full h-[90vh]">
@@ -64,7 +64,7 @@ export default function Home(){
 
         {/*Products*/}
         <div class="w-5/6 mx-auto my-40">
-            <h2 class="text-5xl font-bold mb-20 text-center">Featured Products</h2>
+            <h2 class="text-5xl font-bold mb-20 text-center text-black">Featured Products</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 <For each={products()}>
                     {(product) => (
@@ -75,8 +75,8 @@ export default function Home(){
         </div>
 
         {/* Certificates Section */}
-        <div class="w-5/6 mx-auto my-24">
-            <h2 class="text-4xl font-bold text-center my-12">Our Certifications</h2>
+        <div class="w-5/6 mx-auto pb-30">
+            <h2 class="text-4xl font-bold text-center my-12 text-black">Our Certifications</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 {/* ISO 9001 */}

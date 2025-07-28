@@ -161,15 +161,15 @@ export default function CartItems() {
         <div>
             <TopCenterPopup state={popupState()} onClose={() => setPopupState(null)} />
             <Show when={cartItems.length > 0} fallback={
-                <div class="flex flex-col items-center justify-center h-full p-8 text-gray-500">
-                    <h2 class="text-3xl font-semibold mb-4">Your cart is empty</h2>
-                    <p>Add some products to see them here.</p>
+                <div class="flex flex-col items-center justify-center h-full p-8">
+                    <h2 class="text-3xl font-semibold mb-4 text-gray-800">Your cart is empty</h2>
+                    <p class="text-gray-500">Add some products to see them here.</p>
                 </div>
             }>
                 <div class="max-w-7xl mx-auto p-4">
                     <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
                     <div class="flex justify-between items-center my-10">
-                        <h1 class="text-4xl font-bold">Shopping Cart</h1>
+                        <h1 class="text-4xl font-bold text-gray-800">Shopping Cart</h1>
                         <button
                             onClick={clearCart}
                             class="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 transition cursor-pointer"
