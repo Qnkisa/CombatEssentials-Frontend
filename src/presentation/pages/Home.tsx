@@ -2,24 +2,30 @@ import {A} from "@solidjs/router";
 import {createSignal, For, onMount} from "solid-js";
 import {RemoteRepositoryImpl} from "../../repository/RemoteRepositoryImpl";
 import ProductCard from "../components/products/ProductCard";
+import LoadingIndicator from "../components/general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
 export default function Home(){
     const [products, setProducts] = createSignal<any[]>([]);
     const baseUrl = "https://localhost:7221";
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
 
     onMount(async() => {
         try {
+            setIsLoading(true);
             const result = await repo.getRandomProducts();
             setProducts(result);
+            setIsLoading(false);
         } catch (err) {
             console.error("Failed to fetch products", err);
+        }finally{
+            setIsLoading(false);
         }
     })
 
     return <div class="w-full">
-
+        <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
         {/*Home hero*/}
         <div class="relative w-full h-[90vh]">
             <div>

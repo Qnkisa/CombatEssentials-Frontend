@@ -2,6 +2,7 @@ import { createSignal, onMount } from "solid-js";
 import { RemoteRepositoryImpl } from "../../../../repository/RemoteRepositoryImpl";
 import { useAuthContext } from "../../../../util/context/AuthContext";
 import {useNavigate} from "@solidjs/router";
+import LoadingIndicator from "../../general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -11,15 +12,21 @@ export default function ProfileWishlist() {
     const [token] = useAuthContext();
     const navigate = useNavigate();
 
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
+
     const getWishlist = async () => {
         const bearer = token();
         if (!bearer) return;
 
         try {
+            setIsLoading(false);
             const result = await repo.getUserWishlist(bearer);
             setWishlist(result);
+            setIsLoading(false);
         } catch (e) {
             console.log(e);
+        }finally{
+            setIsLoading(false);
         }
     };
 
@@ -28,10 +35,14 @@ export default function ProfileWishlist() {
         if (!bearer) return;
 
         try {
+            setIsLoading(true);
             await repo.removeFromWishlist(bearer, id);
             await getWishlist();
+            setIsLoading(false);
         } catch (e) {
             console.log(e);
+        }finally{
+            setIsLoading(false);
         }
     };
 
@@ -41,6 +52,7 @@ export default function ProfileWishlist() {
 
     return (
         <div class="w-full min-h-screen bg-gray-50 px-4 py-10">
+            <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
             <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Your Wishlist</h1>
 
             {wishlist().length === 0 ? (

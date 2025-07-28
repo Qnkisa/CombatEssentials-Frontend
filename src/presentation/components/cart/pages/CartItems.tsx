@@ -1,8 +1,9 @@
 import {CartItem, useCartItemsContext} from "../../../../util/context/CartItemsContext";
 import {useAuthContext} from "../../../../util/context/AuthContext";
 import {useNavigate} from "@solidjs/router";
-import {createMemo, onMount, Show} from "solid-js";
+import {createMemo, createSignal, onMount, Show} from "solid-js";
 import {RemoteRepositoryImpl} from "../../../../repository/RemoteRepositoryImpl";
+import LoadingIndicator from "../../general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -11,6 +12,8 @@ export default function CartItems() {
     const baseUrl = "https://localhost:7221";
     const [token] = useAuthContext();
     const navigate = useNavigate();
+
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
 
     onMount(() => {console.log(cartItems)});
 
@@ -26,11 +29,16 @@ export default function CartItems() {
                 const oldQuantity = item ? item.quantity : 0;
                 const newQuantity = oldQuantity + 1;
 
+                setIsLoading(true);
+
                 await repo.updateCartItemQuantity(bearer,cartItemId!, newQuantity);
                 const newCart = await repo.getUserCart(bearer);
                 setCartItems(newCart);
+                setIsLoading(false);
             }catch(err){
                 console.log(err);
+            }finally{
+                setIsLoading(false);
             }
 
         } else {
@@ -60,11 +68,15 @@ export default function CartItems() {
                 const oldQuantity = item ? item.quantity : 0;
                 const newQuantity = oldQuantity - 1;
 
+                setIsLoading(true);
                 await repo.updateCartItemQuantity(bearer,cartItemId!,newQuantity);
                 const newCart = await repo.getUserCart(bearer);
                 setCartItems(newCart);
+                setIsLoading(false);
             }catch(err){
                 console.log(err);
+            }finally{
+                setIsLoading(false);
             }
 
         } else {
@@ -95,12 +107,16 @@ export default function CartItems() {
                 const item = cartItems.find(item => item.productId === productId);
                 const cartItemId = item ? item.id : 0;
 
+                setIsLoading(true);
                 await repo.removeFromCart(bearer, cartItemId!);
 
                 const newCart = await repo.getUserCart(bearer);
                 setCartItems(newCart);
+                setIsLoading(false);
             }catch(err){
                 console.log(err);
+            }finally{
+                setIsLoading(false);
             }
 
         } else {
@@ -116,10 +132,14 @@ export default function CartItems() {
             if(!bearer)return;
 
             try{
+                setIsLoading(true);
                 await repo.clearCart(bearer);
                 setCartItems([]);
+                setIsLoading(false);
             }catch(err){
                 console.log(err);
+            }finally{
+                setIsLoading(false);
             }
         } else {
             localStorage.removeItem("cartItems");
@@ -135,6 +155,7 @@ export default function CartItems() {
             </div>
         }>
             <div class="max-w-7xl mx-auto p-4">
+                <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
                 <div class="flex justify-between items-center my-10">
                     <h1 class="text-4xl font-bold">Shopping Cart</h1>
                     <button

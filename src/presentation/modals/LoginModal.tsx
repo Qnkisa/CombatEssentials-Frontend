@@ -2,6 +2,7 @@ import { createSignal } from "solid-js";
 import Modal from "./Modal";
 import { RemoteRepositoryImpl } from "../../repository/RemoteRepositoryImpl";
 import { useAuthContext } from "../../util/context/AuthContext";
+import LoadingIndicator from "../components/general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -16,16 +17,22 @@ export const LoginModal = (props: {
 
     const [token, setToken] = useAuthContext();
 
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
+
     const onSubmit = async () => {
         setError(null);
         try {
+            setIsLoading(true);
             const result = await repo.login(email().trim(), password());
             localStorage.setItem("combat_token", result.token);
             setToken(result.token);
+            setIsLoading(false);
             props.onSuccess();
         } catch (err) {
             setError("Wrong credentials. Try again.");
             console.error(err);
+        }finally{
+            setIsLoading(false);
         }
     };
 
@@ -33,6 +40,7 @@ export const LoginModal = (props: {
         <Modal state={props.state} onClose={props.onClose}>
             {(state) => (
                 <div class="max-h-[90vh] overflow-y-auto w-[300px] sm:w-[30rem] bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative text-gray-800">
+                    <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
                     {/* Close button */}
                     <button
                         type="button"

@@ -6,6 +6,7 @@ import AdminProductCard from "../admin-components/AdminProductCard";
 import {DeleteProductModal} from "../../../modals/DeleteProductModal";
 import {RecoverProductModal} from "../../../modals/RecoverProductModal";
 import {UpdateProductModal} from "../../../modals/UpdateProductModal";
+import LoadingIndicator from "../../general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -14,15 +15,21 @@ export default function AdminProducts() {
     const [products, setProducts] = createSignal<any[]>([]);
     const [token] = useAuthContext();
 
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
+
     const refreshProducts = async () => {
         const authToken = token();
         if (!authToken) return;
 
         try {
+            setIsLoading(true);
             const result = await repo.getAllAdminProducts(authToken, 1);
             setProducts(result);
+            setIsLoading(false);
         } catch (err) {
             console.error("Failed to fetch products", err);
+        }finally{
+            setIsLoading(false);
         }
     };
 
@@ -58,6 +65,8 @@ export default function AdminProducts() {
     };
 
     return <div>
+        <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
+
         <CreateProductModal
             state={isCreateOpen()}
             onSuccess={() => setIsCreateOpen(undefined)}
@@ -88,12 +97,16 @@ export default function AdminProducts() {
                 if (!authToken || selectedProductId() === null) return;
 
                 try {
+                    setIsLoading(true);
                     await repo.deleteAdminProduct(authToken, selectedProductId()!);
                     setDeleteModalOpen(false);
                     setSelectedProductId(null);
                     await refreshProducts();
+                    setIsLoading(false);
                 } catch (err) {
                     console.error("Delete failed", err);
+                }finally{
+                    setIsLoading(false);
                 }
             }}
         />
@@ -105,14 +118,19 @@ export default function AdminProducts() {
                 if (!authToken || recoverProductId() === null) return;
 
                 try {
+                    setIsLoading(true);
                     await repo.undeleteAdminProduct(authToken, recoverProductId()!);
                     setRecoverModalOpen(false);
                     setRecoverProductId(null);
                     await refreshProducts();
+                    setIsLoading(false);
                 } catch (err) {
                     console.error("Recover failed", err);
+                }finally {
+                    setIsLoading(false);
                 }
-            }}
+            }
+            }
         />
         <div
             class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-5/6 my-5 sm:my-10 mx-auto py-4 sm:py-5 px-4 sm:px-8 bg-gray-700 rounded-xl">

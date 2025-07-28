@@ -2,6 +2,7 @@ import {createEffect, createSignal, onMount, Show} from "solid-js";
 import Modal from "./Modal";
 import { RemoteRepositoryImpl } from "../../repository/RemoteRepositoryImpl";
 import { useAuthContext } from "../../util/context/AuthContext";
+import LoadingIndicator from "../components/general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -29,13 +30,19 @@ export const UpdateProductModal = (props: {
     const [token] = useAuthContext();
     let fileInputRef: HTMLInputElement | undefined;
 
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
+
     onMount(async () => {
         try {
+            setIsLoading(true);
             const fetchedCategories = await repo.getAllCategories();
             setCategories(fetchedCategories);
+            setIsLoading(false);
         } catch (e) {
             console.error("Failed to load categories", e);
             setError("Failed to load categories.");
+        }finally{
+            setIsLoading(false);
         }
     });
 
@@ -88,12 +95,16 @@ export const UpdateProductModal = (props: {
         }
 
         try {
+            setIsLoading(true);
             await repo.updateAdminProduct(authToken, props.product.id, formData);
+            setIsLoading(false);
             props.onSuccess();
             props.onClose();
         } catch (err) {
             console.error(err);
             setError("Error occurred while updating the product.");
+        }finally{
+            setIsLoading(false);
         }
     };
 
@@ -101,6 +112,7 @@ export const UpdateProductModal = (props: {
         <Modal state={props.state} onClose={props.onClose}>
             {(state) => (
                 <div class="max-h-[90vh] overflow-y-auto w-[300px] sm:w-[32rem] bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative text-gray-800">
+                    <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
                     <button
                         type="button"
                         class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl"

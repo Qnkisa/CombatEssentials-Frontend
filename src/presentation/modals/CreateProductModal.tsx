@@ -2,6 +2,7 @@ import {createSignal, onMount} from "solid-js";
 import Modal from "./Modal";
 import { RemoteRepositoryImpl } from "../../repository/RemoteRepositoryImpl";
 import { useAuthContext } from "../../util/context/AuthContext";
+import LoadingIndicator from "../components/general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -19,16 +20,22 @@ export const CreateProductModal = (props: {
     const [imagePreview, setImagePreview] = createSignal<string | null>(null);
     const [error, setError] = createSignal<string | null>(null);
     let fileInputRef: HTMLInputElement | undefined;
-    const [token, setToken] = useAuthContext();
+    const [token] = useAuthContext();
+
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
 
     // Fetch categories when modal opens or component mounts
     onMount(async () => {
         try {
+            setIsLoading(true);
             const fetchedCategories = await repo.getAllCategories();
             setCategories(fetchedCategories);
+            setIsLoading(false);
         } catch (e) {
             console.error("Failed to load categories", e);
             setError("Failed to load categories.");
+        }finally{
+            setIsLoading(false);
         }
     });
 
@@ -68,12 +75,16 @@ export const CreateProductModal = (props: {
         formData.append("ImageFile", imageFile()!);
 
         try {
+            setIsLoading(true);
             await repo.createAdminProduct(authToken, formData);
+            setIsLoading(false);
             props.onSuccess();
             props.onClose();
         } catch (err) {
             console.error(err);
             setError("Error occurred while creating the product.");
+        } finally{
+            setIsLoading(false);
         }
     };
 
@@ -81,6 +92,7 @@ export const CreateProductModal = (props: {
         <Modal state={props.state} onClose={props.onClose}>
             {(state) => (
                 <div class="max-h-[90vh] overflow-y-auto w-[300px] sm:w-[32rem] bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative text-gray-800">
+                    <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
                     <button
                         type="button"
                         class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl"

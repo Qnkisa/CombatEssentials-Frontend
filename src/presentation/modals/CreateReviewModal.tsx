@@ -2,6 +2,7 @@ import { createSignal } from "solid-js";
 import Modal from "./Modal";
 import { RemoteRepositoryImpl } from "../../repository/RemoteRepositoryImpl";
 import { useAuthContext } from "../../util/context/AuthContext";
+import LoadingIndicator from "../components/general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -16,6 +17,8 @@ export const CreateReviewModal = (props: {
     const [error, setError] = createSignal<string | null>(null);
     const [token] = useAuthContext();
 
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
+
     const onSubmit = async () => {
         setError(null);
         const authToken = token();
@@ -27,12 +30,16 @@ export const CreateReviewModal = (props: {
         }
 
         try {
+            setIsLoading(true);
             await repo.createProductReview(authToken, props.productId, Number(rating()), comment());
+            setIsLoading(false);
             props.onSuccess();
             props.onClose();
         } catch (err) {
             console.error(err);
             setError("Error submitting review.");
+        }finally {
+            setIsLoading(false);
         }
     };
 
@@ -40,6 +47,7 @@ export const CreateReviewModal = (props: {
         <Modal state={props.state} onClose={props.onClose}>
             {(state) => (
                 <div class="max-h-[90vh] overflow-y-auto w-[300px] sm:w-[32rem] bg-white rounded-2xl shadow-xl p-6 sm:p-8 relative text-gray-800">
+                    <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
                     <button
                         type="button"
                         class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl"

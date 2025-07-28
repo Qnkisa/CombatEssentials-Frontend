@@ -3,6 +3,7 @@ import {createEffect, createSignal, For, createMemo, Show} from "solid-js";
 import ProductCard from "../components/products/ProductCard";
 import { useLocation, useNavigate } from "@solidjs/router";
 import ProductsFilter from "../components/products/ProductsFilter";
+import LoadingIndicator from "../components/general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -24,7 +25,8 @@ export default function Products() {
     const navigate = useNavigate();
     const [lastPage, setLastPage] = createSignal(1);
 
-    // ✅ createMemo to make these reactive
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
+
     const category = createMemo(() => {
         const value = valueOrFirst(location.query["category"]);
         return value ? decodeURIComponent(value) : undefined;
@@ -49,7 +51,6 @@ export default function Products() {
         navigate(`/products${params.length > 0 ? `?${params}` : ""}`);
     };
 
-    // ✅ use the reactive memos inside the effect
     createEffect(async () => {
         const fCategory = category();
         const fPage = page();
@@ -58,6 +59,7 @@ export default function Products() {
         const nPage = parseInt(fPage);
 
         try {
+            setIsLoading(true);
             const result = await repo.getAllProducts(
                 nPage,
                 fCategory ? parseInt(fCategory) : undefined,
@@ -65,18 +67,21 @@ export default function Products() {
             );
             setProducts(result.products);
             setLastPage(result.lastPage);
-            console.log(`Last page: ${result.lastPage}`);
 
             if (result.lastPage < nPage) {
                 onSearch("1", fCategory ?? "", fName ?? "");
             }
+            setIsLoading(false);
         } catch (err) {
             console.log("Failed to fetch products", err);
+        }finally {
+            setIsLoading(false);
         }
     });
 
     return (
         <div class="w-full">
+            <LoadingIndicator isLoading={isLoading()} loadingText="Loading..." />
             <div class="w-5/6 mx-auto my-20">
                 <h1 class="text-5xl font-bold mb-6">All products</h1>
                 <ProductsFilter

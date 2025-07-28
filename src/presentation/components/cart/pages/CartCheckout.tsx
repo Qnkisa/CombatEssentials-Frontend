@@ -20,6 +20,8 @@ export default function CartCheckout() {
     const navigate = useNavigate();
     const [token] = useAuthContext();
 
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
+
     const validateForm = () => {
         let isValid = true;
 
@@ -67,6 +69,7 @@ export default function CartCheckout() {
             };
 
             try {
+                setIsLoading(true);
                 await repo.createOrder(token() || undefined, payload);
 
                 if(token()){
@@ -80,16 +83,21 @@ export default function CartCheckout() {
                     setCartItems([]);
                 }
 
+                setIsLoading(false);
+
                 navigate("/order-success");
             } catch (err) {
                 setError("An error occurred while placing the order.");
                 console.error(err);
+            }finally{
+                setIsLoading(false);
             }
         }
     };
 
     return (
         <div class="w-full min-h-screen bg-gray-50 flex items-center justify-center p-4">
+            <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
             <div class="bg-white w-full max-w-7xl rounded-2xl shadow-lg p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Left side: Checkout form */}
                 <div class="space-y-4">

@@ -1,5 +1,6 @@
 import { createSignal, onMount, For, createEffect } from "solid-js";
 import { RemoteRepositoryImpl } from "../../../repository/RemoteRepositoryImpl";
+import LoadingIndicator from "../general-components/LoadingIndicator";
 
 // Define the props for this component
 interface ProductsFilterProps {
@@ -22,6 +23,8 @@ export default function ProductsFilter(props: ProductsFilterProps) {
     const [selectedCategory, setSelectedCategory] = createSignal<string | null>(props.category || null);
     const [textFilterValue, setTextFilterValue] = createSignal<string | null>(props.textFilter || null);
 
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
+
     createEffect(() => {
         setSelectedCategory(props.category || null);
     });
@@ -32,10 +35,14 @@ export default function ProductsFilter(props: ProductsFilterProps) {
 
     onMount(async () => {
         try {
+            setIsLoading(true);
             const fetchedCategories: Category[] = await repo.getAllCategories();
             setCategories(fetchedCategories);
+            setIsLoading(false);
         } catch (e) {
             console.error("Failed to load categories", e);
+        }finally{
+            setIsLoading(false);
         }
     });
 
@@ -53,6 +60,7 @@ export default function ProductsFilter(props: ProductsFilterProps) {
 
     return (
         <div class="flex-col flex gap-4 mb-6 lg:flex-row">
+            <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
             <select
                 class="border px-3 py-2 rounded"
                 value={selectedCategory() || ""}

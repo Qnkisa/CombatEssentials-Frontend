@@ -5,6 +5,7 @@ import {useAuthContext} from "../../util/context/AuthContext";
 import {useUserContext} from "../../util/context/UserContext";
 import {CreateReviewModal} from "../modals/CreateReviewModal";
 import {useCartItemsContext} from "../../util/context/CartItemsContext";
+import LoadingIndicator from "../components/general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -25,6 +26,8 @@ export default function Details() {
     const [token] = useAuthContext();
     const [user] = useUserContext();
 
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
+
     const params = useParams();
 
     const productId = () => Number(params.id);
@@ -41,10 +44,14 @@ export default function Details() {
         }
 
         try {
+            setIsLoading(true);
             const result = await repo.getProductById(productId());
             setProduct(result);
+            setIsLoading(false);
         } catch (err) {
             navigate("/*");
+        }finally {
+            setIsLoading(false);
         }
     });
 
@@ -59,11 +66,15 @@ export default function Details() {
         if (!bearer) return;
 
         try {
+            setIsLoading(true);
             await repo.addToWishlist(bearer, productId());
             const result = await repo.getUserWishlist(bearer);
             setWishlist(result);
+            setIsLoading(false);
         } catch (err) {
             console.log(err);
+        }finally{
+            setIsLoading(false);
         }
     }
 
@@ -72,11 +83,15 @@ export default function Details() {
         if (!bearer) return;
 
         try {
+            setIsLoading(true);
             await repo.removeFromWishlist(bearer, productId());
             const result = await repo.getUserWishlist(bearer);
             setWishlist(result);
+            setIsLoading(false);
         } catch (err) {
             console.log(err);
+        }finally{
+            setIsLoading(false);
         }
     }
 
@@ -85,10 +100,14 @@ export default function Details() {
         if (!bearer) return;
 
         try {
+            setIsLoading(true);
             const result = await repo.getUserWishlist(bearer);
             setWishlist(result);
+            setIsLoading(false);
         } catch (err) {
             console.log(err);
+        }finally{
+            setIsLoading(false);
         }
     })
 
@@ -103,20 +122,27 @@ export default function Details() {
 
     const getAverageRating = async () => {
         try {
+            setIsLoading(true);
             const result = await repo.getProductAverageRating(productId());
             setAverageRating(result.averageRating);
+            setIsLoading(false);
         } catch (err) {
             console.log(err);
+        }finally{
+            setIsLoading(false);
         }
     }
 
     const getProductReviews = async () => {
         try {
+            setIsLoading(true);
             const result = await repo.getAllProductReviews(productId());
             setProductReviews(result);
-            console.log(`Product reviews: ${JSON.stringify(productReviews())}`);
+            setIsLoading(false);
         } catch (err) {
             console.log(err);
+        }finally{
+            setIsLoading(false);
         }
     }
 
@@ -125,11 +151,15 @@ export default function Details() {
         if (!bearer) return;
 
         try {
+            setIsLoading(true);
             await repo.deleteProductReview(bearer, reviewId);
             await getProductReviews();
             await getAverageRating();
+            setIsLoading(false);
         } catch (err) {
             console.log(err);
+        }finally{
+            setIsLoading(false);
         }
     }
 
@@ -152,24 +182,34 @@ export default function Details() {
                     const totalQuantity = quantity() + newQuantity;
                     const cartItemId = item ? item.id : 0;
 
+                    setIsLoading(true);
+
                     await repo.updateCartItemQuantity(bearer, cartItemId!, totalQuantity);
 
                     const newCart = await repo.getUserCart(bearer);
-                    console.log(`New cart: ${JSON.stringify(newCart)}`);
                     setCartItems(newCart);
-                    console.log(`Context items: ${JSON.stringify(cartItems)}`);
+
+                    setIsLoading(false);
                 }catch(err){
                     console.log(err);
+                }finally{
+                    setIsLoading(false);
                 }
             }
             else{
                 try{
+                    setIsLoading(true);
+
                     await repo.addToCart(bearer, productId(), quantity());
 
                     const newCart = await repo.getUserCart(bearer);
                     setCartItems(newCart);
+
+                    setIsLoading(false);
                 }catch(err){
                     console.log(err);
+                }finally {
+                    setIsLoading(false);
                 }
             }
         }
@@ -214,6 +254,7 @@ export default function Details() {
 
     return (
         <div class="w-5/6 mx-auto px-4 py-10 bg-white my-10 rounded-3xl">
+            <LoadingIndicator isLoading={isLoading()} loadingText="Loading..." />
             <CreateReviewModal
                 state={isOpenCreate()}
                 onClose={() => setIsOpenCreate(undefined)}
