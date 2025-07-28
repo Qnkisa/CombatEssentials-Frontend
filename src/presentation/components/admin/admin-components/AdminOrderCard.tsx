@@ -2,6 +2,7 @@ import { Component, createSignal } from "solid-js";
 import { useAuthContext } from "../../../../util/context/AuthContext";
 import { RemoteRepositoryImpl } from "../../../../repository/RemoteRepositoryImpl";
 import LoadingIndicator from "../../general-components/LoadingIndicator";
+import {TopCenterPopup} from "../../general-components/TopCenterPopup";
 
 interface OrderItem {
     productId: number;
@@ -42,6 +43,11 @@ const AdminOrderCard: Component<AdminOrderCardProps> = (props) => {
 
     const [isLoading, setIsLoading] = createSignal<boolean>(false);
 
+    const [popupState, setPopupState] = createSignal<{
+        text: string;
+        error?: boolean;
+    } | null>(null);
+
     const handleStatusChange = async (e: Event) => {
         const newStatus = (e.target as HTMLSelectElement).value;
         if (newStatus === status()) return;
@@ -53,6 +59,7 @@ const AdminOrderCard: Component<AdminOrderCardProps> = (props) => {
             });
             setStatus(newStatus);
             setIsLoading(false);
+            setPopupState({ text: "Order status updated successfully!"});
         } catch (err) {
             console.error("Failed to update status", err);
             alert("Failed to update order status.");
@@ -63,6 +70,7 @@ const AdminOrderCard: Component<AdminOrderCardProps> = (props) => {
 
     return (
         <div class="bg-white shadow-lg rounded-2xl p-6 flex flex-col gap-4 transition-shadow hover:shadow-xl duration-300">
+            <TopCenterPopup state={popupState()} onClose={() => setPopupState(null)} />
             <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
             <div class="text-xl font-semibold text-gray-800">Order #{props.id}</div>
 

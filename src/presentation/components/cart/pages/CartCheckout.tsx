@@ -4,6 +4,7 @@ import { useNavigate } from "@solidjs/router";
 import { useAuthContext } from "../../../../util/context/AuthContext";
 import { RemoteRepositoryImpl } from "../../../../repository/RemoteRepositoryImpl";
 import { CreateOrderDto } from "../../../../util/dtos/CreateOrderDto";
+import LoadingIndicator from "../../general-components/LoadingIndicator";
 
 const repo = new RemoteRepositoryImpl();
 

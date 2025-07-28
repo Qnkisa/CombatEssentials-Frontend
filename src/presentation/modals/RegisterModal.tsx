@@ -16,7 +16,7 @@ export const RegisterModal = (props: {
     const [password, setPassword] = createSignal("");
     const [error, setError] = createSignal<string | null>(null);
 
-    const [isLoading, setIsLoading] = createSignal<boolean>(true);
+    const [isLoading, setIsLoading] = createSignal<boolean>(false);
 
     const onSubmit = async () => {
         setError(null);

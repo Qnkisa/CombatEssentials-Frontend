@@ -7,6 +7,7 @@ import {DeleteProductModal} from "../../../modals/DeleteProductModal";
 import {RecoverProductModal} from "../../../modals/RecoverProductModal";
 import {UpdateProductModal} from "../../../modals/UpdateProductModal";
 import LoadingIndicator from "../../general-components/LoadingIndicator";
+import {TopCenterPopup} from "../../general-components/TopCenterPopup";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -64,8 +65,15 @@ export default function AdminProducts() {
         }
     };
 
+    const [popupState, setPopupState] = createSignal<{
+        text: string;
+        error?: boolean;
+    } | null>(null);
+
     return <div>
         <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
+
+        <TopCenterPopup state={popupState()} onClose={() => setPopupState(null)} />
 
         <CreateProductModal
             state={isCreateOpen()}
@@ -73,6 +81,7 @@ export default function AdminProducts() {
             onClose={async () => {
                 setIsCreateOpen(undefined)
                 await refreshProducts();
+                setPopupState({ text: "Product created successfully!"});
             }}
         />
         <UpdateProductModal
@@ -85,6 +94,7 @@ export default function AdminProducts() {
                 setIsUpdateOpen(undefined);
                 setProductToUpdate(null);
                 await refreshProducts();
+                setPopupState({ text: "Product updated successfully!"});
             }}
             product={productToUpdate()}
         />
@@ -103,6 +113,8 @@ export default function AdminProducts() {
                     setSelectedProductId(null);
                     await refreshProducts();
                     setIsLoading(false);
+
+                    setPopupState({ text: "Product deleted!", error: true});
                 } catch (err) {
                     console.error("Delete failed", err);
                 }finally{
@@ -124,6 +136,7 @@ export default function AdminProducts() {
                     setRecoverProductId(null);
                     await refreshProducts();
                     setIsLoading(false);
+                    setPopupState({ text: "Product recovered successfully!"});
                 } catch (err) {
                     console.error("Recover failed", err);
                 }finally {

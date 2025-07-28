@@ -6,6 +6,7 @@ import {useUserContext} from "../../util/context/UserContext";
 import {CreateReviewModal} from "../modals/CreateReviewModal";
 import {useCartItemsContext} from "../../util/context/CartItemsContext";
 import LoadingIndicator from "../components/general-components/LoadingIndicator";
+import {TopCenterPopup} from "../components/general-components/TopCenterPopup";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -36,6 +37,10 @@ export default function Details() {
     const baseUrl = "https://localhost:7221";
     const { cartItems, setCartItems } = useCartItemsContext();
 
+    const [popupState, setPopupState] = createSignal<{
+        text: string;
+        error?: boolean;
+    } | null>(null);
 
     onMount(async () => {
         if (!productId()) {
@@ -71,6 +76,7 @@ export default function Details() {
             const result = await repo.getUserWishlist(bearer);
             setWishlist(result);
             setIsLoading(false);
+            setPopupState({ text: "Added to wishlist successfully!" });
         } catch (err) {
             console.log(err);
         }finally{
@@ -88,6 +94,7 @@ export default function Details() {
             const result = await repo.getUserWishlist(bearer);
             setWishlist(result);
             setIsLoading(false);
+            setPopupState({ text: "Removed from wishlist!", error: true });
         } catch (err) {
             console.log(err);
         }finally{
@@ -156,6 +163,7 @@ export default function Details() {
             await getProductReviews();
             await getAverageRating();
             setIsLoading(false);
+            setPopupState({ text: "Review deleted!", error: true });
         } catch (err) {
             console.log(err);
         }finally{
@@ -190,6 +198,7 @@ export default function Details() {
                     setCartItems(newCart);
 
                     setIsLoading(false);
+                    setPopupState({ text: "Quantity updated successfully!"});
                 }catch(err){
                     console.log(err);
                 }finally{
@@ -206,6 +215,7 @@ export default function Details() {
                     setCartItems(newCart);
 
                     setIsLoading(false);
+                    setPopupState({ text: "Product added to cart successfully!"});
                 }catch(err){
                     console.log(err);
                 }finally {
@@ -233,6 +243,8 @@ export default function Details() {
                             totalPrice: p.price * quantity(),
                         }
                     ];
+                    setPopupState({ text: "Product added to cart successfully!"});
+
                 } else {
                     // Found - update quantity and totalPrice
                     newCartItems = [...prev];
@@ -243,9 +255,9 @@ export default function Details() {
                         quantity: newQuantity,
                         totalPrice: existing.productPrice * newQuantity,
                     };
+                    setPopupState({ text: "Quantity updated successfully!"});
                 }
 
-                // Save to localStorage
                 localStorage.setItem("cartItems", JSON.stringify(newCartItems));
                 return newCartItems;
             });
@@ -255,6 +267,7 @@ export default function Details() {
     return (
         <div class="w-5/6 mx-auto px-4 py-10 bg-white my-10 rounded-3xl">
             <LoadingIndicator isLoading={isLoading()} loadingText="Loading..." />
+            <TopCenterPopup state={popupState()} onClose={() => setPopupState(null)} />
             <CreateReviewModal
                 state={isOpenCreate()}
                 onClose={() => setIsOpenCreate(undefined)}
@@ -262,6 +275,7 @@ export default function Details() {
                     setIsOpenCreate(undefined);
                     await getProductReviews();
                     await getAverageRating();
+                    setPopupState({ text: "Review added successfully!"});
                 }}
                 productId={productId()}
             />

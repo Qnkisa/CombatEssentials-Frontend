@@ -5,6 +5,7 @@ import {LoginModal} from "../../modals/LoginModal";
 import {useUserContext} from "../../../util/context/UserContext";
 import {useAuthContext} from "../../../util/context/AuthContext";
 import {useCartItemsContext} from "../../../util/context/CartItemsContext";
+import {TopCenterPopup} from "./TopCenterPopup";
 
 export default function Header() {
     const [isMobileOpen, setIsMobileOpen] = createSignal<boolean>(false);
@@ -27,18 +28,35 @@ export default function Header() {
         localStorage.removeItem("combat_token");
         localStorage.removeItem("combat_user");
         setIsMobileOpen(false);
+        setPopupState({ text: "You logged out successfully!"});
+        navigate("/");
     }
+
+    const [popupState, setPopupState] = createSignal<{
+        text: string;
+        error?: boolean;
+    } | null>(null);
 
     return (
         <div class="bg-white shadow-md">
+            <TopCenterPopup state={popupState()} onClose={() => setPopupState(null)} />
             <RegisterModal
                 state={isRegisterOpen()}
-                onSuccess={() => setIsRegisterOpen(undefined)}
+                onSuccess={() => {
+                        setIsRegisterOpen(undefined);
+                        setIsLoginOpen(true);
+                    }
+                }
                 onClose={() => setIsRegisterOpen(undefined)}
             />
             <LoginModal
                 state={isLoginOpen()}
-                onSuccess={() => setIsLoginOpen(undefined)}
+                onSuccess={() => {
+                        setIsLoginOpen(undefined);
+                        setPopupState({ text: "You logged in successfully!"});
+                        navigate("/");
+                    }
+                }
                 onClose={() => setIsLoginOpen(undefined)}
             />
 

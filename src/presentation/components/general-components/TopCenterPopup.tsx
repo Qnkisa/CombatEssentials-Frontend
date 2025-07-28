@@ -72,7 +72,7 @@ export const TopCenterPopup = (props: TopCenterPopupProps): JSX.Element => {
 
     return (
         <div
-            class={`fixed inset-0 flex justify-center items-start my-2 transition-opacity duration-200 pointer-events-none z-50 ${
+            class={`fixed inset-0 flex justify-center items-start my-2 transition-opacity duration-200 pointer-events-none z-50 text-black ${
                 isVisible() ? "opacity-100" : "opacity-0"
             }`}
         >
