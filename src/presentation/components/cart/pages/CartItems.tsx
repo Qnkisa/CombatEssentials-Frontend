@@ -170,7 +170,7 @@ export default function CartItems() {
                         <h1 class="text-4xl font-bold text-gray-800">Shopping Cart</h1>
                         <button
                             onClick={clearCart}
-                            class="bg-red-600 text-white px-3 py-2 rounded hover:bg-red-700 transition cursor-pointer"
+                            class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition cursor-pointer"
                             aria-label="Clear cart"
                         >
                             Clear Cart
@@ -239,7 +239,7 @@ export default function CartItems() {
                     </div>
                     <div class="w-full flex justify-end my-10">
                         <button onClick={() => navigate("/cart/checkout")}
-                                class="flex items-center gap-2 bg-blue-600 transition hover:bg-blue-700 cursor-pointer text-white py-2 px-3 rounded">
+                                class="flex items-center gap-2 bg-blue-600 transition hover:bg-blue-700 cursor-pointer text-white py-2 px-3 rounded-lg">
                             <div>Checkout</div>
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"

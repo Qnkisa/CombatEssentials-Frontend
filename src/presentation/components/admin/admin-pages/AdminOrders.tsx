@@ -67,7 +67,7 @@ export default function AdminOrders() {
                 <h1 class="text-2xl sm:text-5xl font-bold text-gray-800">Orders</h1>
             </div>
 
-            <div class="w-5/6 mx-auto grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-4 gap-6 pb-20">
+            <div class="w-5/6 mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 pb-20">
                 <For each={orders()}>
                     {(order) => (
                         <AdminOrderCard

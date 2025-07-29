@@ -332,7 +332,7 @@ export default function Details() {
 
                                 <div class="text-xl">
                                     <span class="font-semibold text-gray-800">Category:</span>{" "}
-                                    <span class="text-indigo-600">{p().categoryName}</span>
+                                    <span class="text-blue-600">{p().categoryName}</span>
                                 </div>
 
                                 <div class="text-3xl font-bold text-green-700">${p().price.toFixed(2)}</div>
@@ -342,14 +342,14 @@ export default function Details() {
                                     <span class="text-lg font-medium text-black">Quantity:</span>
                                     <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
                                         <button
-                                            class="px-3 py-1 text-xl font-bold bg-indigo-600 hover:bg-indigo-700 transition cursor-pointer"
+                                            class="px-3 py-1 text-xl font-bold bg-blue-600 hover:bg-blue-700 transition cursor-pointer"
                                             onClick={decrement}
                                         >
                                             -
                                         </button>
-                                        <div class="px-4 py-1 text-lg text-indigo-600">{quantity()}</div>
+                                        <div class="px-4 py-1 text-lg text-blue-600">{quantity()}</div>
                                         <button
-                                            class="px-3 py-1 text-xl font-bold bg-indigo-600 hover:bg-indigo-700 transition cursor-pointer"
+                                            class="px-3 py-1 text-xl font-bold bg-blue-600 hover:bg-blue-700 transition cursor-pointer"
                                             onClick={increment}
                                         >
                                             +
@@ -360,7 +360,7 @@ export default function Details() {
                                 {/* Add to Cart Button */}
                                 <div class="pt-6">
                                     <button
-                                        class="bg-indigo-600 hover:bg-indigo-700 cursor-pointer text-white px-6 py-3 rounded-2xl shadow transition duration-200 ease-in-out"
+                                        class="bg-blue-600 hover:bg-blue-700 cursor-pointer text-white px-6 py-3 rounded-2xl shadow transition duration-200 ease-in-out"
                                         onClick={handleAddToCart}
                                     >
                                         Add to Cart
@@ -372,7 +372,7 @@ export default function Details() {
 
                         {/*Product reviews*/}
                         <div class="border-t border-gray-200 pt-10">
-                            <div class="flex justify-between items-center">
+                            <div class="flex gap-5 justify-between items-center">
                                 <h2 class="text-black text-2xl font-semibold">Product Reviews
                                     - {averageRating()?.toFixed(2)} (avg. rating)</h2>
                                 <div>
@@ -381,7 +381,13 @@ export default function Details() {
                                             class="bg-green-600 text-white rounded-lg p-2 text-sm sm:text-base font-medium hover:bg-green-700 transition cursor-pointer"
                                             onClick={() => setIsOpenCreate(true)}
                                         >
-                                            Create Review
+                                            <div class="hidden lg:flex">Create Review</div>
+                                            <div class="lg:hidden">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <line x1="12" y1="5" x2="12" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                    <line x1="5" y1="12" x2="19" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                                </svg>
+                                            </div>
                                         </button>
                                     </Show>
                                 </div>

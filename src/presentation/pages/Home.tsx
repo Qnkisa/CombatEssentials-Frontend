@@ -51,7 +51,7 @@ export default function Home(){
         </div>
 
         {/*Brands*/}
-        <div class="w-5/6 mx-auto my-20">
+        <div class="w-5/6 mx-auto my-15">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-10 sm:gap-10 lg:gap-8 xl:gap-3 items-center justify-items-center">
                 <img src="/fairtex.png" alt="Fairtex" class="h-28 object-contain" />
                 <img src="/hayabusa.png" alt="Hayabusa" class="h-28 object-contain" />
@@ -63,7 +63,7 @@ export default function Home(){
         </div>
 
         {/*Products*/}
-        <div class="w-5/6 mx-auto my-40">
+        <div class="w-5/6 mx-auto my-30">
             <h2 class="text-5xl font-bold mb-20 text-center text-gray-800">Featured Products</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 <For each={products()}>

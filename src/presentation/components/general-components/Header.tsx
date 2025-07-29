@@ -60,7 +60,7 @@ export default function Header() {
                 onClose={() => setIsLoginOpen(undefined)}
             />
 
-            <div class="w-5/6 mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+            <div class="w-full md:w-5/6 mx-auto px-4 md:px-6 lg:px-8 py-4 flex items-center justify-between">
                 <A href="/" class="text-2xl font-bold text-gray-800">
                     CombatEssentials
                 </A>
@@ -154,7 +154,7 @@ export default function Header() {
                 <div class="md:hidden">
                     <button
                         onClick={() => setIsMobileOpen(!isMobileOpen())}
-                        class="text-gray-800 focus:outline-none"
+                        class="text-gray-800 focus:outline-none cursor-pointer"
                     >
                         <svg
                             class="h-6 w-6"
@@ -209,10 +209,20 @@ export default function Header() {
                                   </button>
                               </>
                           }>
-                        <A href="/profile" onClick={() => setIsMobileOpen(false)}
-                           class="hover:text-blue-600 flex items-center gap-1" aria-label="Profile">
-                            Profile
-                        </A>
+                        <div class="flex flex-col space-y-1">
+                            <A href="/profile" onClick={() => setIsMobileOpen(false)}
+                               class="hover:text-blue-600 flex items-center gap-1" aria-label="Profile">
+                                Profile
+                            </A>
+                            <div class="pl-4 flex flex-col space-y-1 text-sm text-gray-600">
+                                <A href="/profile/info" onClick={() => setIsMobileOpen(false)}
+                                   class="hover:text-blue-500">Info</A>
+                                <A href="/profile/orders" onClick={() => setIsMobileOpen(false)}
+                                   class="hover:text-blue-500">Orders</A>
+                                <A href="/profile/wishlist" onClick={() => setIsMobileOpen(false)}
+                                   class="hover:text-blue-500">Wishlist</A>
+                            </div>
+                        </div>
                         <Show when={user()?.isAdmin}>
                             <div class="flex flex-col space-y-1">
                                 <A href="/admin" onClick={() => setIsMobileOpen(false)} class="hover:text-blue-600">

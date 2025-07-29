@@ -107,7 +107,7 @@ export default function ProfileWishlist() {
                             <img
                                 src={`${baseUrl}${item.imageUrl}`}
                                 alt={item.name}
-                                class="w-full sm:w-32 h-32 object-cover rounded-md border"
+                                class="w-full sm:w-32 h-32 object-cover object-top rounded-md border"
                             />
                             <div
                                 class="flex-1 w-full cursor-pointer"
