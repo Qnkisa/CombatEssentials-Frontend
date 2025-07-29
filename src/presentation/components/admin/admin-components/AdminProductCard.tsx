@@ -23,7 +23,7 @@ export default function AdminProductCard(props: AdminProductCardProps): JSX.Elem
                 <img
                     src={`${baseUrl}${props.imageUrl}`}
                     alt={props.name}
-                    class="w-full h-full object-cover transition duration-200 hover:scale-105"
+                    class="w-full h-full object-cover object-top transition duration-200 hover:scale-105"
                     onError={(e) =>
                         (e.currentTarget.src = "/fallback.jpg")
                     }

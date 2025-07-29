@@ -59,47 +59,57 @@ export default function ProductsFilter(props: ProductsFilterProps) {
     };
 
     return (
-        <div class="flex-col flex gap-4 mb-6 lg:flex-row">
-            <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
-            <select
-                class="border px-3 py-2 rounded"
-                value={selectedCategory() || ""}
-                onChange={handleCategoryChange}
-            >
-                <option class="text-black" value="" selected={(selectedCategory() || "") === ""}>All categories</option>
-                <For each={categories()}>
-                    {(cat) => (
-                        <option
-                            value={cat.id.toString()}
-                            selected={(selectedCategory() || "") === cat.id.toString()}
-                            class="text-black"
-                        >
-                            {cat.name}
-                        </option>
-                    )}
-                </For>
-            </select>
+        <div class="flex flex-col lg:flex-row items-stretch gap-4 mb-8">
+            <LoadingIndicator isLoading={isLoading()} loadingText="Loading..." />
 
-            <div class="flex items-center gap-2 flex-grow relative">
-                <img
-                    src="/search-icon.png"
-                    alt="search-icon"
-                    class="w-8 h-8 absolute right-4 cursor-pointer bg-white rounded-full p-1"
-                    onClick={() => handleSubmitTextFilter()}
-                />
-                <input
-                    type="search"
-                    placeholder="Search product by name..."
-                    class="w-full px-3 py-2 border rounded"
-                    value={textFilterValue() || ""}
-                    onInput={(e) => setTextFilterValue((e.target as HTMLInputElement).value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            e.preventDefault();
-                            handleSubmitTextFilter();
-                        }
-                    }}
-                />
+            {/* Category Select */}
+            <div class="w-full lg:w-1/4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <select
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
+                    value={selectedCategory() || ""}
+                    onChange={handleCategoryChange}
+                >
+                    <option value="" selected={(selectedCategory() || "") === ""}>
+                        All categories
+                    </option>
+                    <For each={categories()}>
+                        {(cat) => (
+                            <option
+                                value={cat.id.toString()}
+                                selected={(selectedCategory() || "") === cat.id.toString()}
+                            >
+                                {cat.name}
+                            </option>
+                        )}
+                    </For>
+                </select>
+            </div>
+
+            {/* Text Search */}
+            <div class="flex flex-col w-full lg:flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                <div class="relative">
+                    <input
+                        type="search"
+                        placeholder="Search product by name..."
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 bg-white focus:outline-none focus:ring-2 focus:ring-gray-800 transition"
+                        value={textFilterValue() || ""}
+                        onInput={(e) => setTextFilterValue((e.target as HTMLInputElement).value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleSubmitTextFilter();
+                            }
+                        }}
+                    />
+                    <img
+                        src="/search-icon.png"
+                        alt="search-icon"
+                        class="w-5 h-5 absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer hover:scale-110 transition"
+                        onClick={() => handleSubmitTextFilter()}
+                    />
+                </div>
             </div>
         </div>
     );

@@ -16,8 +16,6 @@ export default function CartItems() {
 
     const [isLoading, setIsLoading] = createSignal<boolean>(false);
 
-    onMount(() => {console.log(cartItems)});
-
     const [popupState, setPopupState] = createSignal<{
         text: string;
         error?: boolean;

@@ -43,7 +43,6 @@ const UserOrderCard: Component<UserOrderCardProps> = (props) => {
                 <ul class="flex flex-col gap-3">
                     {props.orderItems.map((item) => {
                         const imageUrl = `${baseUrl}${item.productImageUrl}`;
-                        console.log("Image URL:", imageUrl);
 
                         return (
                             <li class="flex items-center gap-4 bg-gray-50 rounded-lg p-3 border border-gray-200">

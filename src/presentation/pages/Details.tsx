@@ -74,7 +74,7 @@ export default function Details() {
             setIsLoading(true);
             await repo.addToWishlist(bearer, productId());
             const result = await repo.getUserWishlist(bearer);
-            setWishlist(result);
+            setWishlist(result.products);
             setIsLoading(false);
             setPopupState({ text: "Added to wishlist successfully!" });
         } catch (err) {
@@ -92,7 +92,7 @@ export default function Details() {
             setIsLoading(true);
             await repo.removeFromWishlist(bearer, productId());
             const result = await repo.getUserWishlist(bearer);
-            setWishlist(result);
+            setWishlist(result.products);
             setIsLoading(false);
             setPopupState({ text: "Removed from wishlist!", error: true });
         } catch (err) {
@@ -109,7 +109,7 @@ export default function Details() {
         try {
             setIsLoading(true);
             const result = await repo.getUserWishlist(bearer);
-            setWishlist(result);
+            setWishlist(result.products);
             setIsLoading(false);
         } catch (err) {
             console.log(err);
@@ -119,6 +119,7 @@ export default function Details() {
     })
 
     const isInWishlist = () => {
+        console.log(`Wishlist nigga: ${JSON.stringify(wishlist())}`);
         return wishlist().some((item) => item.id === productId());
     };
 

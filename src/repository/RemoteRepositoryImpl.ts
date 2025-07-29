@@ -294,8 +294,8 @@ export class RemoteRepositoryImpl implements RemoteRepository {
         return await response.json();
     }
 
-    async getUserWishlist(bearer: string): Promise<any>{
-        const response = await fetch(`${this.apiUrl}/Wishlist`, {
+    async getUserWishlist(bearer: string, page: number = 1): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Wishlist?page=${page}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -438,8 +438,8 @@ export class RemoteRepositoryImpl implements RemoteRepository {
     }
 
     //Order api functions
-    async getUserOrders(bearer: string): Promise<any>{
-        const response = await fetch(`${this.apiUrl}/Orders/user`, {
+    async getUserOrders(bearer: string, page: number = 1): Promise<any>{
+        const response = await fetch(`${this.apiUrl}/Orders/user?page=${page}`, {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',

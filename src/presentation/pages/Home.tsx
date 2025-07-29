@@ -64,7 +64,7 @@ export default function Home(){
 
         {/*Products*/}
         <div class="w-5/6 mx-auto my-40">
-            <h2 class="text-5xl font-bold mb-20 text-center text-black">Featured Products</h2>
+            <h2 class="text-5xl font-bold mb-20 text-center text-gray-800">Featured Products</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 <For each={products()}>
                     {(product) => (
@@ -76,13 +76,13 @@ export default function Home(){
 
         {/* Certificates Section */}
         <div class="w-5/6 mx-auto pb-30">
-            <h2 class="text-4xl font-bold text-center my-12 text-black">Our Certifications</h2>
+            <h2 class="text-4xl font-bold text-center my-12 text-gray-800">Our Certifications</h2>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                 {/* ISO 9001 */}
                 <div class="bg-white shadow-md rounded-xl p-6 flex flex-col items-center text-center">
                     <img class="w-48 h-48 object-cover my-10" src="/iso9001.png"/>
-                    <h3 class="text-xl font-semibold mb-2 text-black">ISO 9001:2015</h3>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800">ISO 9001:2015</h3>
                     <p class="text-gray-600 text-sm">
                         Certified Quality Management System ensuring consistent product quality and customer
                         satisfaction.

@@ -1,4 +1,4 @@
-import {createSignal, For, onMount} from "solid-js";
+import {createEffect, createMemo, createSignal, For, onMount, Show} from "solid-js";
 import {CreateProductModal} from "../../../modals/CreateProductModal";
 import {useAuthContext} from "../../../../util/context/AuthContext";
 import {RemoteRepositoryImpl} from "../../../../repository/RemoteRepositoryImpl";
@@ -8,6 +8,9 @@ import {RecoverProductModal} from "../../../modals/RecoverProductModal";
 import {UpdateProductModal} from "../../../modals/UpdateProductModal";
 import LoadingIndicator from "../../general-components/LoadingIndicator";
 import {TopCenterPopup} from "../../general-components/TopCenterPopup";
+import ProductsFilter from "../../products/ProductsFilter";
+import {valueOrFirst} from "../../../pages/Products";
+import {useLocation, useNavigate} from "@solidjs/router";
 
 const repo = new RemoteRepositoryImpl();
 
@@ -18,23 +21,11 @@ export default function AdminProducts() {
 
     const [isLoading, setIsLoading] = createSignal<boolean>(false);
 
-    const refreshProducts = async () => {
-        const authToken = token();
-        if (!authToken) return;
+    const navigate = useNavigate();
+    const location = useLocation();
 
-        try {
-            setIsLoading(true);
-            const result = await repo.getAllAdminProducts(authToken, 1);
-            setProducts(result);
-            setIsLoading(false);
-        } catch (err) {
-            console.error("Failed to fetch products", err);
-        }finally{
-            setIsLoading(false);
-        }
-    };
-
-    onMount(refreshProducts);
+    const [lastPage, setLastPage] = createSignal(1);
+    const [refetchTrigger, setRefetchTrigger] = createSignal(0);
 
     // Delete product logic
     const [deleteModalOpen, setDeleteModalOpen] = createSignal<boolean>(false);
@@ -70,18 +61,80 @@ export default function AdminProducts() {
         error?: boolean;
     } | null>(null);
 
-    return <div class="w-full min-h-screen bg-gray-50 px-4 py-10">
+    const category = createMemo(() => {
+        const value = valueOrFirst(location.query["category"]);
+        return value ? decodeURIComponent(value) : undefined;
+    });
+
+    const page = createMemo(() => {
+        const value = valueOrFirst(location.query["page"]);
+        return value ? decodeURIComponent(value) : "1";
+    });
+
+    const textValue = createMemo(() => {
+        const value = valueOrFirst(location.query["name"]);
+        return value ? decodeURIComponent(value) : undefined;
+    });
+
+    const onSearch = (page: string, category: string, textValue: string) => {
+        const queryParams = new URLSearchParams();
+        if (page) queryParams.append("page", page);
+        if (category) queryParams.append("category", category);
+        if (textValue) queryParams.append("name", textValue);
+        const params = queryParams.toString();
+        navigate(`/admin/products${params.length > 0 ? `?${params}` : ""}`);
+    };
+
+    createEffect(async () => {
+        refetchTrigger();
+
+        const fCategory = category();
+        const fPage = page();
+        const fName = textValue();
+
+        const nPage = parseInt(fPage);
+
+        const bearer = token();
+        if(!bearer) return;
+
+        try {
+            setIsLoading(true);
+
+            const result = await repo.getAllAdminProducts(
+                bearer,
+                nPage,
+                fCategory ? parseInt(fCategory) : undefined,
+                fName ?? undefined
+            );
+            setProducts(result.products);
+            setLastPage(result.lastPage);
+
+            if (result.lastPage < nPage) {
+                onSearch("1", fCategory ?? "", fName ?? "");
+            }
+            setIsLoading(false);
+        } catch (err) {
+            console.log("Failed to fetch products", err);
+        }finally {
+            setIsLoading(false);
+        }
+    });
+
+    return <div class="w-full min-h-screen bg-gray-50 pb-20">
         <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
 
         <TopCenterPopup state={popupState()} onClose={() => setPopupState(null)} />
 
         <CreateProductModal
             state={isCreateOpen()}
-            onSuccess={() => setIsCreateOpen(undefined)}
+            onSuccess={() => {
+                    setIsCreateOpen(undefined)
+                    setRefetchTrigger(prev => prev + 1);
+                    setPopupState({ text: "Product created successfully!"});
+                }
+            }
             onClose={async () => {
                 setIsCreateOpen(undefined)
-                await refreshProducts();
-                setPopupState({ text: "Product created successfully!"});
             }}
         />
         <UpdateProductModal
@@ -93,7 +146,7 @@ export default function AdminProducts() {
             onSuccess={async () => {
                 setIsUpdateOpen(undefined);
                 setProductToUpdate(null);
-                await refreshProducts();
+                setRefetchTrigger(prev => prev + 1);
                 setPopupState({ text: "Product updated successfully!"});
             }}
             product={productToUpdate()}
@@ -111,7 +164,7 @@ export default function AdminProducts() {
                     await repo.deleteAdminProduct(authToken, selectedProductId()!);
                     setDeleteModalOpen(false);
                     setSelectedProductId(null);
-                    await refreshProducts();
+                    setRefetchTrigger(prev => prev + 1);
                     setIsLoading(false);
 
                     setPopupState({ text: "Product deleted!", error: true});
@@ -134,7 +187,7 @@ export default function AdminProducts() {
                     await repo.undeleteAdminProduct(authToken, recoverProductId()!);
                     setRecoverModalOpen(false);
                     setRecoverProductId(null);
-                    await refreshProducts();
+                    setRefetchTrigger(prev => prev + 1);
                     setIsLoading(false);
                     setPopupState({ text: "Product recovered successfully!"});
                 } catch (err) {
@@ -145,20 +198,21 @@ export default function AdminProducts() {
             }
             }
         />
-        <div
-            class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between w-5/6 my-5 sm:my-10 mx-auto py-4 sm:py-5 px-4 sm:px-8 bg-white shadow-sm rounded-2xl">
-            <h1 class="text-2xl sm:text-5xl font-bold text-gray-800">Products</h1>
-            <div>
-                <button
-                    class="bg-green-600 text-white rounded-lg p-2 text-sm sm:text-base font-medium hover:bg-green-700 transition cursor-pointer"
-                    onClick={() => setIsCreateOpen(true)}
-                >
-                    Create Product
-                </button>
-            </div>
+        <div class="w-5/6 mx-auto pt-20 text-gray-800">
+            <h1 class="text-5xl font-bold mb-10 text-center">Admin products</h1>
+            <ProductsFilter
+                setCategory={(value) => {
+                    onSearch(page() ?? "1", value ?? "", textValue() ?? "");
+                }}
+                setTextFilter={(value) => {
+                    onSearch(page() ?? "1", category() ?? "", value ?? "");
+                }}
+                category={category() ?? ""}
+                textFilter={textValue() ?? ""}
+            />
         </div>
 
-        <div class="w-5/6 mx-auto grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-5 gap-6 pb-20">
+        <div class="w-5/6 mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             <For each={products()}>
                 {(product) => (
                     <AdminProductCard
@@ -175,6 +229,110 @@ export default function AdminProducts() {
                     />
                 )}
             </For>
+        </div>
+
+        <div class="flex justify-center mt-10">
+            <Show when={lastPage() > 1}>
+                <div class="flex flex-wrap justify-center gap-2">
+                    {/* First Page Button */}
+                    <button
+                        class="px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        aria-label="First Page"
+                        onClick={() => onSearch("1", category() ?? "", textValue() ?? "")}
+                        disabled={page() === "1"}
+                    >
+                        « First
+                    </button>
+
+                    {/* Previous Page Button */}
+                    <button
+                        class="px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        aria-label="Previous Page"
+                        onClick={() =>
+                            onSearch(
+                                (Math.max(1, parseInt(page() || "1") - 1)).toString(),
+                                category() ?? "",
+                                textValue() ?? ""
+                            )
+                        }
+                        disabled={page() === "1"}
+                    >
+                        ‹
+                    </button>
+
+                    {/* Dynamic Page Numbers with Ellipsis */}
+                    {(() => {
+                        const totalPages = lastPage();
+                        const current = parseInt(page() || "1");
+                        const pages = [];
+
+                        const start = Math.max(1, current - 2);
+                        const end = Math.min(totalPages, current + 2);
+
+                        if (start > 1) {
+                            pages.push(1);
+                            if (start > 2) pages.push("...");
+                        }
+
+                        for (let i = start; i <= end; i++) {
+                            pages.push(i);
+                        }
+
+                        if (end < totalPages) {
+                            if (end < totalPages - 1) pages.push("...");
+                            pages.push(totalPages);
+                        }
+
+                        return pages.map((p) =>
+                            typeof p === "number" ? (
+                                <button
+                                    type="button"
+                                    class={`px-4 py-2 border rounded-md transition ${
+                                        p === current
+                                            ? "bg-gray-800 text-white border-gray-800"
+                                            : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
+                                    }`}
+                                    onClick={() =>
+                                        onSearch(p.toString(), category() ?? "", textValue() ?? "")
+                                    }
+                                >
+                                    {p}
+                                </button>
+                            ) : (
+                                <span class="px-4 py-2 text-gray-400 select-none">…</span>
+                            )
+                        );
+                    })()}
+
+                    {/* Next Page Button */}
+                    <button
+                        class="px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        aria-label="Next Page"
+                        onClick={() =>
+                            onSearch(
+                                (Math.min(lastPage(), parseInt(page() || "1") + 1)).toString(),
+                                category() ?? "",
+                                textValue() ?? ""
+                            )
+                        }
+                        disabled={parseInt(page() || "1") >= lastPage()}
+                    >
+                        ›
+                    </button>
+
+                    {/* Last Page Button */}
+                    <button
+                        class="px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                        aria-label="Last Page"
+                        onClick={() =>
+                            onSearch(lastPage().toString(), category() ?? "", textValue() ?? "")
+                        }
+                        disabled={parseInt(page() || "1") >= lastPage()}
+                    >
+                        Last »
+                    </button>
+                </div>
+            </Show>
         </div>
     </div>
 }

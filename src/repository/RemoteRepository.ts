@@ -29,7 +29,7 @@ export interface RemoteRepository {
     //Wishlist api functions
     addToWishlist(bearer: string, productId: number): Promise<any>;
     removeFromWishlist(bearer: string, productId: number): Promise<any>;
-    getUserWishlist(bearer: string): Promise<any>;
+    getUserWishlist(bearer: string, page?: number): Promise<any>;
 
     //Review api functions
     getAllProductReviews(productId: number): Promise<any>;
@@ -45,7 +45,7 @@ export interface RemoteRepository {
     updateCartItemQuantity(bearer: string, cartItemId: number, quantity: number): Promise<any>;
 
     //Order api functions
-    getUserOrders(bearer: string): Promise<any>;
+    getUserOrders(bearer: string, page?: number): Promise<any>;
     createOrder(bearer: string | undefined, orderDto: CreateOrderDto): Promise<any>;
 
 }

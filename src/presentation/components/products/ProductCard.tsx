@@ -19,14 +19,14 @@ const ProductCard: Component<ProductCardProps> = ({ product, baseUrl }) => {
             <img
                 src={`${baseUrl}${product.imageUrl}`}
                 alt={product.name}
-                class="w-full h-64 object-cover bg-gray-100"
+                class="w-full h-64 object-cover object-top bg-gray-100"
                 onError={(e) => (e.currentTarget.src = "/fallback.jpg")}
             />
             <div class="p-5 flex flex-col gap-2 flex-grow">
                 <h3 class="text-xl font-semibold text-gray-800">{product.name}</h3>
                 <p class="text-sm text-gray-600 line-clamp-3">{product.description}</p>
                 <div class="mt-2">
-                    <p class="text-lg font-bold text-gray-900">${product.price.toFixed(2)}</p>
+                    <p class="text-lg font-bold text-gray-800">${product.price.toFixed(2)}</p>
                     <p class="text-sm text-gray-500">{product.categoryName}</p>
                 </div>
                 <A

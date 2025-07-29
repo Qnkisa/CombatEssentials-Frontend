@@ -2,7 +2,7 @@ function MissionCard({ title, description, path }: { title: string; description:
     return (
         <div class="bg-white shadow-md rounded-xl p-6 text-center flex flex-col items-center hover:shadow-xl transition-shadow duration-300">
             <img src={path} class="w-36 h-36 object-cover"/>
-            <h3 class="text-2xl font-semibold my-2 text-black">{title}</h3>
+            <h3 class="text-2xl font-semibold my-2 text-gray-800">{title}</h3>
             <p class="text-gray-600 text-sm">{description}</p>
         </div>
     );
@@ -13,7 +13,7 @@ function PersonCard({ name, imageSrc, quote }: { name: string; imageSrc: string;
     return (
         <div class="flex flex-col items-center bg-white shadow-md rounded-xl p-4 hover:shadow-lg transition-shadow duration-300">
             <img src={imageSrc} alt={name} class="w-60 h-60 object-cover rounded-full" />
-            <h4 class="text-xl font-semibold">{name}</h4>
+            <h4 class="text-xl font-semibold text-gray-800 my-5">{name}</h4>
             <p class="italic text-gray-500 text-center mt-2 px-4 text-sm leading-relaxed lg:leading-loose">“{quote}”</p>
         </div>
     );
@@ -25,7 +25,7 @@ export default function About() {
         <div class="w-full">
             {/* Mission Section */}
             <div class="w-5/6 mx-auto my-20">
-                <h2 class="text-5xl font-bold text-center mb-10">Our Mission</h2>
+                <h2 class="text-5xl font-bold text-center mb-10 text-gray-800">Our Mission</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <MissionCard
                         title="Driven by Purpose"
@@ -47,7 +47,7 @@ export default function About() {
 
             {/* People Section */}
             <div class="w-5/6 mx-auto my-20">
-                <h2 class="text-4xl font-bold text-center mb-10">Meet the People</h2>
+                <h2 class="text-4xl font-bold text-center mb-10 text-gray-800">Meet the People</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                     <PersonCard
                         name="Dana Mitchell"
