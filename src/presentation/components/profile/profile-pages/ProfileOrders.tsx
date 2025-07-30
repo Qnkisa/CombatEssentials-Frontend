@@ -65,6 +65,11 @@ export default function ProfileOrders() {
         <LoadingIndicator isLoading={isLoading()} loadingText="Loading..."/>
 
         <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Your Orders</h1>
+        <Show when={orders().length <= 0}>
+            <div class="text-center text-gray-500 text-lg mt-10">
+                You don't have any orders.
+            </div>
+        </Show>
 
         <div class="w-5/6 mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 pb-20">
             <For each={orders()}>

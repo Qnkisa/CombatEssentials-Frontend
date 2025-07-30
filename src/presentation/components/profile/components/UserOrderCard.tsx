@@ -35,6 +35,7 @@ const UserOrderCard: Component<UserOrderCardProps> = (props) => {
                 <div><span class="font-medium">Customer:</span> {props.fullName}</div>
                 <div><span class="font-medium">Phone:</span> {props.phoneNumber}</div>
                 <div><span class="font-medium">Address:</span> {props.shippingAddress}</div>
+                <div><span class="font-medium">Order status:</span> {props.orderStatus}</div>
                 <div><span class="font-medium">Total:</span> ${props.totalAmount.toFixed(2)}</div>
             </div>
 

@@ -222,6 +222,12 @@ export default function AdminProducts() {
             />
         </div>
 
+        <Show when={products().length <= 0}>
+            <div class="text-center text-gray-500 text-lg mt-10">
+                No products found.
+            </div>
+        </Show>
+
         <div class="w-5/6 mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             <For each={products()}>
                 {(product) => (
