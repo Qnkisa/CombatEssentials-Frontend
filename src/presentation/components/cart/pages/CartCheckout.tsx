@@ -23,32 +23,51 @@ export default function CartCheckout() {
 
     const [isLoading, setIsLoading] = createSignal<boolean>(false);
 
+    const [fullNameErrorMessage, setFullNameErrorMessage] = createSignal("");
+    const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = createSignal("");
+    const [shippingAddressErrorMessage, setShippingAddressErrorMessage] = createSignal("");
+
     const validateForm = () => {
         let isValid = true;
 
+        // Full name
         if (!fullName().trim()) {
             setFullNameError(true);
+            setFullNameErrorMessage("Full name is required.");
             isValid = false;
         } else {
             setFullNameError(false);
+            setFullNameErrorMessage("");
         }
 
-        if (!phoneNumber().trim()) {
+        // Phone number
+        const phoneTrimmed = phoneNumber().trim();
+        if (!phoneTrimmed) {
             setPhoneNumberError(true);
+            setPhoneNumberErrorMessage("Phone number is required.");
+            isValid = false;
+        } else if (!/^[0][0-9]{9}$/.test(phoneTrimmed)) {
+            setPhoneNumberError(true);
+            setPhoneNumberErrorMessage("Phone number must be 10 digits and start with 0.");
             isValid = false;
         } else {
             setPhoneNumberError(false);
+            setPhoneNumberErrorMessage("");
         }
 
+        // Shipping address
         if (!shippingAddress().trim()) {
             setShippingAddressError(true);
+            setShippingAddressErrorMessage("Shipping address is required.");
             isValid = false;
         } else {
             setShippingAddressError(false);
+            setShippingAddressErrorMessage("");
         }
 
         return isValid;
     };
+
 
     const handleSubmit = async () => {
         setError("");
@@ -104,7 +123,6 @@ export default function CartCheckout() {
                 <div class="space-y-4">
                     <h2 class="text-2xl font-bold text-gray-800">Shipping Information</h2>
 
-                    {error() && <div class="text-red-600 font-medium">{error()}</div>}
 
                     <div>
                         <label class="text-sm text-gray-600">Full Name</label>
@@ -115,6 +133,7 @@ export default function CartCheckout() {
                             onInput={(e) => setFullName(e.currentTarget.value)}
                             placeholder="John Doe"
                         />
+                        {fullNameError() && <p class="text-sm text-red-500 mt-1">{fullNameErrorMessage()}</p>}
                     </div>
 
                     <div>
@@ -124,8 +143,9 @@ export default function CartCheckout() {
                             class={`mt-1 w-full p-3 border rounded-lg bg-gray-100 focus:outline-none focus:ring-2 text-black ${phoneNumberError() ? "border-red-500 focus:ring-red-400" : "focus:ring-blue-400"}`}
                             value={phoneNumber()}
                             onInput={(e) => setPhoneNumber(e.currentTarget.value)}
-                            placeholder="+359 888 123 456"
+                            placeholder="0888 123 456"
                         />
+                        {phoneNumberError() && <p class="text-sm text-red-500 mt-1">{phoneNumberErrorMessage()}</p>}
                     </div>
 
                     <div>
@@ -137,6 +157,7 @@ export default function CartCheckout() {
                             onInput={(e) => setShippingAddress(e.currentTarget.value)}
                             placeholder="Street name, city, postal code..."
                         />
+                        {shippingAddressError() && <p class="text-sm text-red-500 mt-1">{shippingAddressErrorMessage()}</p>}
                     </div>
 
                     <button

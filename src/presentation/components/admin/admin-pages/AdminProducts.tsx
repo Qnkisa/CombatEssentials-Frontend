@@ -199,7 +199,17 @@ export default function AdminProducts() {
             }
         />
         <div class="w-5/6 mx-auto pt-20 text-gray-800">
-            <h1 class="text-5xl font-bold mb-10 text-center">Admin products</h1>
+            <div class="flex w-full gap-10 justify-between items-center flex-wrap mb-10">
+                <h1 class="text-5xl font-bold text-center">Admin products</h1>
+                <div>
+                    <button
+                        class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded-lg transition cursor-pointer"
+                        onClick={() => setIsCreateOpen(true)}
+                    >
+                        Add product
+                    </button>
+                </div>
+            </div>
             <ProductsFilter
                 setCategory={(value) => {
                     onSearch(page() ?? "1", value ?? "", textValue() ?? "");
